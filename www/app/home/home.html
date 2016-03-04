@@ -1,0 +1,71 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <span class="navbar-brand">{{userName}}</span>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 dataTable_wrapper">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong style="font-size: 17px;">我的评价</strong>
+                </div>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="text-btn-center" style="font-size: 17px;padding: 12px 8px;">送货速度：{{evaluate.deliverySpeedScore}}分</td>
+                            <td class="text-btn-center" style="font-size: 17px;padding: 12px 8px;">服务态度：{{evaluate.trackerServiceScore}}分</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-12 dataTable_wrapper">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong style="font-size: 17px;">今日订单</strong>
+                </div>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="text-btn-center">
+                                <button class="btn btn-lg btn-danger" ui-sref="today-order-list" style="width: 80%;">待配送(单)：
+                                    <span class="badge">{{deliverOrderCount}}</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                             <td class="text-btn-center">
+                                <button class="btn btn-lg btn-success" ui-sref="today-order-list({statusValue:2})" style="width: 80%;">已配送(单)：
+                                    <span class="badge">{{deliveredOrderCount}}</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                             <td class="text-btn-center">
+                                <button class="btn btn-lg btn-primary" ui-sref="query-page" style="width: 80%;">
+                                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>&nbsp;配送单查询
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-btn-center">
+                                <button class="btn btn-lg btn-default" ng-click = "logout()" style="width: 80%;">
+                                    <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;退出登录
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="version">当前最新版本V3.3</div>

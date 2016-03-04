@@ -1,0 +1,39 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <span class="navbar-brand">配送单查询</span>
+            <button type="button" class="btn btn-default navbar-btn" ui-sref="home" style="padding-left: 10px;">
+                <span class="glyphicon glyphicon-menu-left back-left" aria-hidden="true"></span>返回首页
+            </button>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <br>
+    <br>
+    <br>
+    <div class="row home-row">
+        <button class="btn btn-lg btn-primary" style="width: 84%;" ui-sref="today-order-query">
+            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp;&nbsp;当日订单
+        </button>
+    </div>
+    <br>
+    <div class="row home-row" >
+        <button class="btn btn-lg btn-primary" style="width: 84%;" ui-sref="out-of-stock">
+            <span class="glyphicon glyphicon-bell" aria-hidden="true"></span>&nbsp;&nbsp;缺货查询
+        </button>
+    </div>
+    <br>
+    <div class="row home-row" >
+        <button class="btn btn-lg btn-primary" style="width: 84%;" ui-sref="return-goods-query({startReturnDate:startDate,endReturnDate:endDate})">
+            <span class="glyphicon glyphicon-sort" aria-hidden="true"></span>&nbsp;&nbsp;退货查询
+        </button>
+    </div>
+    <br>
+    <div class="row home-row" >
+        <button class="btn btn-lg btn-primary" style="width: 84%;" ui-sref="histories-query({startReceiveDate:startDate,endReceiveDate:endDate})">
+            <span class="glyphicon glyphicon-list" aria-hidden="true"></span>&nbsp;&nbsp;历史查询
+        </button>
+    </div>
+</div>

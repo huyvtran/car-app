@@ -1,1 +1,180 @@
-/* Empty. Add your own CSS if you like */
+body {
+    padding-top: 70px;
+}
+.navbar-default {
+	/*background-color: #646464;*/
+}
+.col-lg-12 {
+	padding-right: 1px;
+    padding-left: 1px;
+}
+.panel-heading {
+	padding-left: 8px;
+}
+#lblMsgConfirmYesNo, #alertMsg {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    font-size: 18px;
+}
+.modal-footer {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+#btnNoConfirmYesNo, #btnYesConfirmYesNo, #alertBtn {
+    padding: 8px 18px;
+    font-size: 15px;
+}
+.alert {
+    padding: 20px;
+    font-size: 25px;
+    text-align: center;
+}
+.back-left {
+    top: 2px;
+}
+.navbar-btn {
+	margin-right: 10px;
+    float: right;
+}
+.text-btn-center {
+	text-align: center;
+}
+.custome-label {
+    height: 35px;
+    line-height: 35px;
+    font-size: 16px;
+    width: 65%;
+    float: left;
+}
+.check-tip {
+	color: red;
+	font-size: 13px;
+	margin-top: -8px;
+}
+.custom-btn {
+	float: right;
+    margin-right: 8px;
+    width: 30%;
+    margin-top: -25px;
+    padding: 10px 10px;
+}
+.redress-confirm-btn {
+    text-align: center;
+    min-height: 70px;
+    width: 100%;
+    position: fixed;
+    bottom: -10px;
+    right: 0;
+    left: 0;
+    display: block;
+    z-index: 1033;
+}
+.redress-confirm-label {
+    display: block;
+    font-size: 100%;
+    text-align: left;
+    background-color: #f8f8f8;
+    color: #000;
+    padding-top: .4em;
+    padding-bottom: 0.5em;
+}
+.no-order-tip {
+    text-align: center;
+    font-size: 19px;
+    margin-top: 40%;
+}
+#loading-bar .bar {
+    background-color: #398439;
+    height: 3px;
+}
+#loading-bar .peg {
+    -webkit-box-shadow: #398439 1px 0 6px 1px;
+    box-shadow: #398439 1px 0 6px 1px;
+}
+#loading-bar-spinner {
+    display: none;
+}
+.panel-primary>.panel-heading {
+    background-color: #777;
+    border-color: #777;
+}
+.panel-primary {
+    border-color: #777;
+}
+.amount-tip {
+    float: right;
+    margin-top: 2px;
+}
+.input-fixed {
+    position: fixed;
+    z-index: 10;
+    left: 12px;
+    right: 12px;
+}
+.version {
+    position: absolute;
+    bottom: 8px;
+    text-align: center;
+    width: 100%;
+}
+.modal.fade .modal-dialog {
+    transition: transform .1s ease-out;
+    -webkit-transition: -webkit-transform .1s ease-out;
+}
+.home-row {
+    text-align: center; 
+    margin-bottom: 8px;
+}
+.home-row .glyphicon {
+    top: 2px;
+}
+.bs-callout {
+    padding: 6px;
+    margin: 8px 6px;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+.bs-callout-info-danger {
+    border-left-color: #c9302c;
+}
+.bs-callout-info-success {
+    border-left-color: #5cb85c;
+}
+.bs-callout h4 {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    color: #c9302c;
+}
+.bs-callout h4.success {
+    color: #5cb85c;
+}
+.acount-wrapper {
+    margin: auto 15px;
+    margin-top: -6px;
+}
+.row .left {
+    float: left;
+}
+.row .right {
+    float: right;
+}
+.alert-tip {
+    font-size: 18px;
+    padding: 8px;
+    text-align: left;
+    margin-top: -18px;
+}
+.th-vertical {
+    vertical-align: middle !important;
+}
+.form-row {
+    margin: -5px -6px 14px;
+}
+.search-btn {
+    width: 92%;
+    padding: 8px 16px;
+}
+.form-inline .row {
+    text-align: center;
+}
