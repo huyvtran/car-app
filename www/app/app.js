@@ -26,7 +26,7 @@ angular
          "host": ""  //本地
     })
     .run(function ($ionicPlatform, $cordovaFile,$cordovaFileOpener2, $cordovaFileTransfer,$timeout,ConfirmModalDialogService,$state,UpdateService,NetworkUtil) {
-        
+
 
     })
 	.config(['$stateProvider', '$urlRouterProvider', '$ocLazyLoadProvider', '$locationProvider', '$httpProvider', '$provide',

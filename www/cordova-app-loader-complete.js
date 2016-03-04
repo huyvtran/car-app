@@ -296,7 +296,8 @@
 	      if(!!files && files.length){
 	        self.cache.remove(files);
 	      }
-	      return files;
+			  return "error";
+	      //return files;
 	    });
 	};
 
