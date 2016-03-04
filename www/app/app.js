@@ -11,6 +11,7 @@ angular
 	.module('logisticsApp', [
         'ionic',
         'templatesCache',
+        'ngCordova',
         'oc.lazyLoad',
         'angular-loading-bar',
         'ui.router',
@@ -24,36 +25,9 @@ angular
         // "host": "http://114.215.100.12"  //测试
          "host": ""  //本地
     })
-    .run(function () {
-        var fs = new CordovaPromiseFS({
-            Promise: Promise
-        });
+    .run(function ($ionicPlatform, $cordovaFile,$cordovaFileOpener2, $cordovaFileTransfer,$timeout,ConfirmModalDialogService,$state,UpdateService,NetworkUtil) {
+        
 
-        var loader = new CordovaAppLoader({
-            fs: fs,
-            serverRoot: 'http://siji.canguanwuyou.cn/logistics/',
-            localRoot: 'app',
-            cacheBuster: true,
-            checkTimeout: 10000,
-            mode: 'mirror',
-            manifest: 'manifest.json' + "?" + Date.now()
-        });
-
-        function check(){
-            loader.check()
-                .then(function(){
-                    console.log("-----into check ---------");
-                    return loader.download();
-                })
-                .then(function(){
-                    console.log("--------into download ---------");
-                    return loader.update();
-                },function(err){
-                    console.error('Auto-update error:',err);
-                });
-        }
-
-        check();
     })
 	.config(['$stateProvider', '$urlRouterProvider', '$ocLazyLoadProvider', '$locationProvider', '$httpProvider', '$provide',
         function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $locationProvider, $httpProvider, $provide) {

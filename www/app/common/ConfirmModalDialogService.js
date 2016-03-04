@@ -35,5 +35,19 @@ angular.module('logisticsApp')
 		    });
 		}
 
+		service.AsyncDialogShow = function(title,msg){
+			var dialogModal = $("#dialogModal");
+			dialogModal.modal({backdrop: 'static', keyboard: false});
+			dialogModal.modal('show');
+			$("#downloadProgressMessage").text(msg);
+			$("#dialogTitle").text(title);
+		}
+
+		service.AsyncDialogHide = function(){
+			var dialogModal = $("#dialogModal");
+			dialogModal.modal('hide');
+			$("body .modal-backdrop").remove();
+		}
+
 		return service;
 	});
