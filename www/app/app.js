@@ -23,7 +23,8 @@ angular
         // "host": "http://115.28.66.10"  //线上
         "host": "http://siji.canguanwuyou.cn"
         //"host": "http://114.215.100.12"  //测试
-         //"host": ""  //本地
+        // "host": "",  //本地
+        // "environment": "develop"
     })
     .run(function ($ionicPlatform, $cordovaFile,$cordovaFileOpener2, $cordovaFileTransfer,$timeout,ConfirmModalDialogService,$state,UpdateService,NetworkUtil) {
 
@@ -31,12 +32,12 @@ angular
             if (ionic.Platform.isAndroid()) {
 
                 cordova.getAppVersion.getVersionCode(function (versionCode) {
-                    var curVersionCode = 18;
-                    if (versionCode < curVersionCode) {
-                        /*ConfirmModalDialogService.AsyncConfirmYesNo("版本有更新，是否需要升级？",
+                    var newVersionCode = 18;
+                    if (versionCode < newVersionCode) {
+                        ConfirmModalDialogService.AsyncConfirmYesNo("版本有更新，是否需要升级？",
                             function () {
-                                var url = "http://115.28.66.10:9090/cgwy_verdor_28.apk";
-                                var targetPath = cordova.file.externalApplicationStorageDirectory + 'cgwy/cgwy_' + curVersionCode + '.apk';
+                                var url = "http://115.28.66.10:9090/cgwy_car.apk";
+                                var targetPath = cordova.file.externalApplicationStorageDirectory + 'cgwy/cgwy_car_' + newVersionCode + '.apk';
                                 var trustHosts = true;
                                 var options = {};
                                 $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
@@ -60,7 +61,7 @@ angular
                                         })
                                     });
                             }
-                        );*/
+                        );
                     } else {
 
                         if (NetworkUtil.getNetworkRs()) {

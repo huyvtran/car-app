@@ -4,7 +4,7 @@
   "proxies": [
     {
       "path": "/api",
-      "proxyUrl": "http://siji.canguanwuyou.cn/api/"
+      "proxyUrl": "http://siji.canguanwuyou.cn/admin/api/"
     },
     {
       "path":"/admin/api/",
