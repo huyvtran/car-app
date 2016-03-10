@@ -6,7 +6,8 @@ angular.module('logisticsApp')
 
         var loader = new CordovaAppLoader({
             fs: fs,
-            serverRoot: 'http://siji.canguanwuyou.cn/logistics/',
+            //serverRoot: 'http://siji.canguanwuyou.cn/logistics/',
+            serverRoot:'http://115.28.66.10:8088/',
             localRoot: 'app',
             cacheBuster: true, // make sure we're not downloading cached files.
             checkTimeout: 10000, // timeout for the "check" function - when you loose internet connection
