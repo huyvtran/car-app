@@ -9,7 +9,6 @@
 angular.module('logisticsApp')
     .controller('LoginCtrl', function($scope, $http, $state, apiConfig, ConfirmModalDialogService) {
 
-        alert("欢迎使用司机版");
         $scope.isLoginState = false;
 
     	$scope.user = {
