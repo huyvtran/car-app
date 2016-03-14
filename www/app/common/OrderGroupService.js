@@ -5,12 +5,33 @@ angular.module('logisticsApp')
 
 		service.getOrderGroups = function () {
 			return $http({
-				url: apiConfig.host + "/admin/api/v2/orderGroups",
+				url: apiConfig.host + "/admin/api/v2/orderGroups/",
 				method: "GET"
 			}).then(function (payload) {
 				return payload.data;
 			})
 		};
+
+		service.getLntLat = function(){
+
+			return $http({
+				url: apiConfig.host + "/admin/api/v2/orderGroupPoint",
+				method: "GET",
+			}).then(function (payload) {
+				return payload.data;
+			})
+
+		}
+		service.getLoad = function(houseLgt,houseLat){
+			return $http({
+				url: apiConfig.host + "/admin/api/v2/orderGroupsApp",
+				method: "GET",
+				params:{lon:houseLgt,lat:houseLat}
+			}).then(function (payload) {
+				return payload.data;
+			})
+
+		}
 
 		service.setRestaurantInfo = function (order) {
 			service.order = order; 

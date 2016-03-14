@@ -192,6 +192,25 @@ angular
                         }
                     }
                 })
+                .state('plan-path', {
+                    templateUrl: 'plan-path/plan-path.html',
+                    controller: 'PlanPathCtrl',
+                    url: '/plan-path/?backParams',
+                    resolve: {
+                        loadMyFiles: function ($ocLazyLoad) {
+                            return $ocLazyLoad.load({
+                                name: 'logisticsApp',
+                                files: [
+                                    'app/common/OrderGroupService.js',
+                                    'app/redress-location/MapService.js',
+                                    'app/plan-path/PlanPathCtrl.js'
+
+
+                                ]
+                            })
+                        }
+                    }
+                })
                 .state('stockOut-receive', {
                     templateUrl: 'stockout-receive/stockOut-receive.html',
                     controller: 'StockOutReceiveCtrl',

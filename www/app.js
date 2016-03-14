@@ -11,6 +11,7 @@ angular
 	.module('logisticsApp', [
         'ionic',
         'templatesCache',
+        'ngCordova',
         'oc.lazyLoad',
         'angular-loading-bar',
         'ui.router',
@@ -21,39 +22,65 @@ angular
     .constant('apiConfig', {
         // "host": "http://115.28.66.10"  //线上
         //"host": "http://siji.canguanwuyou.cn"
-        // "host": "http://114.215.100.12"  //测试
+        //"host": "http://114.215.100.12"  //测试
          "host": ""  //本地
     })
-    .run(function () {
-        var fs = new CordovaPromiseFS({
-            Promise: Promise
-        });
+    .run(function ($ionicPlatform, $cordovaFile,$cordovaFileOpener2, $cordovaFileTransfer,$timeout,ConfirmModalDialogService,$state,UpdateService,NetworkUtil) {
 
-        var loader = new CordovaAppLoader({
-            fs: fs,
-            serverRoot: 'http://siji.canguanwuyou.cn/logistics/',
-            localRoot: 'app',
-            cacheBuster: true,
-            checkTimeout: 10000,
-            mode: 'mirror',
-            manifest: 'manifest.json' + "?" + Date.now()
-        });
+        $ionicPlatform.ready(function () {
+            if (ionic.Platform.isAndroid()) {
 
-        function check(){
-            loader.check()
-                .then(function(){
-                    console.log("-----into check ---------");
-                    return loader.download();
-                })
-                .then(function(){
-                    console.log("--------into download ---------");
-                    return loader.update();
-                },function(err){
-                    console.error('Auto-update error:',err);
+                cordova.getAppVersion.getVersionCode(function (versionCode) {
+                    var curVersionCode = 18;
+                    if (versionCode < curVersionCode) {
+                        /*ConfirmModalDialogService.AsyncConfirmYesNo("版本有更新，是否需要升级？",
+                            function () {
+                                var url = "http://115.28.66.10:9090/cgwy_verdor_28.apk";
+                                var targetPath = cordova.file.externalApplicationStorageDirectory + 'cgwy/cgwy_' + curVersionCode + '.apk';
+                                var trustHosts = true;
+                                var options = {};
+                                $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+                                    .then(function (result) {
+                                        // 打开下载下来的APP
+                                        $cordovaFileOpener2.open(targetPath, 'application/vnd.android.package-archive')
+                                            .then(function () {
+                                            }, function (err) {
+                                                ConfirmModalDialogService.AsyncAlert("文件打开失败，请稍后重试！");
+                                            });
+                                    }, function (err) {
+                                        ConfirmModalDialogService.AsyncAlert("当前网络不稳定,下载失败!");
+                                    }, function (progress) {
+                                        $timeout(function () {
+                                            var downloadProgress = (progress.loaded / progress.total) * 100;
+                                            var msg = "已经下载:" + Math.floor(downloadProgress) + "%";
+                                            ConfirmModalDialogService.AsyncDialogShow("下载进度" , msg);
+                                            if (downloadProgress >= 99) {
+                                                ConfirmModalDialogService.AsyncDialogHide();
+                                            }
+                                        })
+                                    });
+                            }
+                        );*/
+                    } else {
+
+                        if (NetworkUtil.getNetworkRs()) {
+                            var updateObject = function () {
+                                UpdateService.updateApp().then(function (result) {
+                                    if (result == 2) {
+                                        ConfirmModalDialogService.AsyncConfirmYesNo("数据更新失败是否需要重试?",
+                                        function(){
+                                            updateObject();
+                                        });
+                                    }
+                                });
+                            }
+                            updateObject();
+                        }
+                    }
                 });
-        }
 
-        check();
+            }
+        });
     })
 	.config(['$stateProvider', '$urlRouterProvider', '$ocLazyLoadProvider', '$locationProvider', '$httpProvider', '$provide',
         function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $locationProvider, $httpProvider, $provide) {
@@ -160,6 +187,25 @@ angular
                                     'app/redress-location/RedressLocationCtrl.js',
                                     'app/common/OrderGroupService.js',
                                     'app/redress-location/MapService.js'
+                                ]
+                            })
+                        }
+                    }
+                })
+                .state('plan-path', {
+                    templateUrl: 'plan-path/plan-path.html',
+                    controller: 'PlanPathCtrl',
+                    url: '/plan-path/?backParams',
+                    resolve: {
+                        loadMyFiles: function ($ocLazyLoad) {
+                            return $ocLazyLoad.load({
+                                name: 'logisticsApp',
+                                files: [
+                                    'app/common/OrderGroupService.js',
+                                    'app/redress-location/MapService.js',
+                                    'app/plan-path/PlanPathCtrl.js'
+
+
                                 ]
                             })
                         }
@@ -303,6 +349,20 @@ angular.module('logisticsApp')
 		    });
 		}
 
+		service.AsyncDialogShow = function(title,msg){
+			var dialogModal = $("#dialogModal");
+			dialogModal.modal({backdrop: 'static', keyboard: false});
+			dialogModal.modal('show');
+			$("#downloadProgressMessage").text(msg);
+			$("#dialogTitle").text(title);
+		}
+
+		service.AsyncDialogHide = function(){
+			var dialogModal = $("#dialogModal");
+			dialogModal.modal('hide');
+			$("body .modal-backdrop").remove();
+		}
+
 		return service;
 	});
 angular.module('logisticsApp')
@@ -312,12 +372,33 @@ angular.module('logisticsApp')
 
 		service.getOrderGroups = function () {
 			return $http({
-				url: apiConfig.host + "/admin/api/v2/orderGroups",
+				url: apiConfig.host + "/admin/api/v2/orderGroups/",
 				method: "GET"
 			}).then(function (payload) {
 				return payload.data;
 			})
 		};
+
+		service.getLntLat = function(){
+
+			return $http({
+				url: apiConfig.host + "/admin/api/v2/orderGroupPoint",
+				method: "GET",
+			}).then(function (payload) {
+				return payload.data;
+			})
+
+		}
+		service.getLoad = function(houseLgt,houseLat){
+			return $http({
+				url: apiConfig.host + "/admin/api/v2/orderGroupsApp",
+				method: "GET",
+				params:{lon:houseLgt,lat:houseLat}
+			}).then(function (payload) {
+				return payload.data;
+			})
+
+		}
 
 		service.setRestaurantInfo = function (order) {
 			service.order = order; 
@@ -337,7 +418,7 @@ angular.module('logisticsApp')
 
         var loader = new CordovaAppLoader({
             fs: fs,
-            serverRoot: 'http://115.28.66.10/logistics/',
+            serverRoot: 'http://siji.canguanwuyou.cn/logistics/',
             localRoot: 'app',
             cacheBuster: true, // make sure we're not downloading cached files.
             checkTimeout: 10000, // timeout for the "check" function - when you loose internet connection
@@ -400,9 +481,236 @@ angular.module('logisticsApp')
             }
         };
 
+
+        //1:成功 | 2:失败 | 3:不需要更新 | 4:未知情况
+        service.updateApp = function (){
+            var defer = $q.defer();
+            service.check().then(function (result) {
+                    if (result === true) {
+                        console.log('update manifest files');
+                        var download = service.download();
+                        download.then(
+                            function (manifest) {
+                                if (manifest != "error") {
+                                    service.update();
+                                    console.log('manifest files update success');
+                                    defer.resolve(1);
+                                } else {
+                                    localStorage.removeItem('last_update_files');
+                                    console.log('manifest files update fail');
+                                    defer.resolve(2);
+                                }
+                            },
+                            function (error) {
+                                console.log('manifest error....: ');
+                                console.log(JSON.stringify(error));
+                                defer.resolve(4);
+                            }
+                        );
+                    } else {
+                        console.log('not update manifest');
+                        defer.resolve(3);
+                    }
+                },
+                function (error) {
+                    console.log('no update manifest -- error');
+                    console.log(JSON.stringify(error));
+                    defer.resolve(4);
+                });
+            return defer.promise;
+        }
+
         return service;
 
     }])
+
+'use strict';
+/**
+ * @ngdoc function
+ * @name logisticsApp.controller:HistoriesQueryCtrl
+ * @description
+ * # HistoriesQueryCtrl
+ * Controller of the logisticsApp
+ */
+angular.module('logisticsApp')
+    .controller('HistoriesQueryCtrl', function($scope, $stateParams, $filter, $http, $location, apiConfig, ConfirmModalDialogService) {
+    	
+    	$scope.searchForm = {
+            page : $stateParams.page,
+            pageSize : $stateParams.pageSize,
+            startReceiveDate : $stateParams.startReceiveDate,
+            endReceiveDate : $stateParams.endReceiveDate
+		};
+
+		$scope.subTotal = 0;
+		$scope.format = 'yyyy-MM-dd';
+		$scope.page = {itemsPerPage : 100};
+        $scope.showLoading = true;
+
+		$scope.openStart = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.openedEnd = false;
+            $scope.openedStart = true;
+        };
+
+        $scope.openEnd = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.openedStart = false;
+            $scope.openedEnd = true;
+        };
+
+        $scope.dateOptions = {
+            dateFormat: 'yyyy-MM-dd',
+            formatYear: 'yyyy',
+            startingDay: 1,
+            startWeek: 1
+        };
+
+        $scope.$watch('startDate', function(newVal) {
+            $scope.searchForm.startReceiveDate = $filter('date')(newVal, 'yyyy-MM-dd');
+        });
+
+        $scope.$watch('endDate', function(newVal) {
+            $scope.searchForm.endReceiveDate = $filter('date')(newVal, 'yyyy-MM-dd');
+        });
+
+        if ($scope.searchForm.startReceiveDate) {
+            $scope.startDate = Date.parse($scope.searchForm.startReceiveDate);
+        }
+
+        if ($scope.searchForm.endReceiveDate) {
+            $scope.endDate = Date.parse($scope.searchForm.endReceiveDate);
+        }
+
+        $http({
+            url: apiConfig.host + "/admin/api/v2/tracker/stockOutReceive/list",
+            method: "GET",
+            params: $scope.searchForm
+        })
+        .success(function (data, status) {
+            // console.log(data);
+            $scope.historyOrderLists = data.content;
+
+            for (var i=0; i < $scope.historyOrderLists.length; i++) {
+                var historyOrderList = $scope.historyOrderLists[i];
+                $scope.subTotal += historyOrderList.amount;
+
+                // $scope.historyOrderLists[i].amount = historyOrderList.amount.toFixed(2);
+            }
+
+            $scope.showLoading = false;
+
+            $scope.page.itemsPerPage = data.pageSize;
+            $scope.page.totalItems = data.total;
+            $scope.page.currentPage = data.page + 1;
+        })
+        .error(function (data, status) {
+            ConfirmModalDialogService.AsyncAlert("获取历史数据失败");
+
+            $scope.showLoading = false;
+        });
+
+        $scope.resetPageAndSearch = function () {
+            $scope.searchForm.page = 0;
+            $scope.searchForm.pageSize = 100;
+
+            $location.search($scope.searchForm);
+        };
+
+        $scope.pageChanged = function() {
+            $scope.searchForm.page = $scope.page.currentPage - 1;
+            $scope.searchForm.pageSize = $scope.page.itemsPerPage;
+
+            $location.search($scope.searchForm);
+        }
+    });
+'use strict';
+/**
+ * @ngdoc function
+ * @name logisticsApp.controller:LoginCtrl
+ * @description
+ * # LoginCtrl
+ * Controller of the logisticsApp
+ */
+angular.module('logisticsApp')
+    .controller('LoginCtrl', function($scope, $http, $state, apiConfig, ConfirmModalDialogService) {
+
+        $scope.isLoginState = false;
+
+    	$scope.user = {
+            username: '',
+            password: ''
+        };
+
+        $scope.isLocalStorageSupported = function () {
+            var testKey = 'testKey',
+                storage = window.localStorage;
+
+            try {
+                storage.setItem(testKey, 'testValue');
+                storage.removeItem(testKey);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        };
+
+        // 登录
+        $scope.login = function (user) {
+            if (user.username === "") {
+                ConfirmModalDialogService.AsyncAlert("登录用户名不能为空");
+                return;
+            }
+            if (user.password === "") {
+                ConfirmModalDialogService.AsyncAlert("登录密码不能为空");
+                return;
+            }
+
+            $scope.isLoginState = true;
+
+            $http({
+                url: apiConfig.host + "/api/login",
+                method: 'POST',
+                data: user
+            })
+            .success(function (data, status) {
+                if ($scope.isLocalStorageSupported()) {
+                    window.localStorage['cachedUsername'] = user.username;
+                    window.localStorage['password'] = user.password;
+                }
+
+                // document.cookie = "realName="+escape(data.name);
+
+                $state.go("home");
+
+                $scope.isLoginState = false;
+            })
+            .error(function (data, status) {
+                $scope.isLoginState = false;
+
+                if (data)
+                    ConfirmModalDialogService.AsyncAlert(data.errmsg);
+                else
+                    ConfirmModalDialogService.AsyncAlert("登录失败");
+            });
+        };
+
+        if (window.localStorage['cachedUsername']) {
+            $scope.user.username = window.localStorage['cachedUsername'];
+            $scope.user.password = window.localStorage['password'];
+
+            $scope.login($scope.user);
+        }
+
+        // 重置
+        $scope.reset = function () {
+            $scope.user.username = "";
+            $scope.user.password = "";
+        };
+
+    });
 
 'use strict';
 /**
@@ -512,108 +820,6 @@ angular.module('logisticsApp')
 'use strict';
 /**
  * @ngdoc function
- * @name logisticsApp.controller:HistoriesQueryCtrl
- * @description
- * # HistoriesQueryCtrl
- * Controller of the logisticsApp
- */
-angular.module('logisticsApp')
-    .controller('HistoriesQueryCtrl', function($scope, $stateParams, $filter, $http, $location, apiConfig, ConfirmModalDialogService) {
-    	
-    	$scope.searchForm = {
-            page : $stateParams.page,
-            pageSize : $stateParams.pageSize,
-            startReceiveDate : $stateParams.startReceiveDate,
-            endReceiveDate : $stateParams.endReceiveDate
-		};
-
-		$scope.subTotal = 0;
-		$scope.format = 'yyyy-MM-dd';
-		$scope.page = {itemsPerPage : 100};
-        $scope.showLoading = true;
-
-		$scope.openStart = function ($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.openedEnd = false;
-            $scope.openedStart = true;
-        };
-
-        $scope.openEnd = function ($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.openedStart = false;
-            $scope.openedEnd = true;
-        };
-
-        $scope.dateOptions = {
-            dateFormat: 'yyyy-MM-dd',
-            formatYear: 'yyyy',
-            startingDay: 1,
-            startWeek: 1
-        };
-
-        $scope.$watch('startDate', function(newVal) {
-            $scope.searchForm.startReceiveDate = $filter('date')(newVal, 'yyyy-MM-dd');
-        });
-
-        $scope.$watch('endDate', function(newVal) {
-            $scope.searchForm.endReceiveDate = $filter('date')(newVal, 'yyyy-MM-dd');
-        });
-
-        if ($scope.searchForm.startReceiveDate) {
-            $scope.startDate = Date.parse($scope.searchForm.startReceiveDate);
-        }
-
-        if ($scope.searchForm.endReceiveDate) {
-            $scope.endDate = Date.parse($scope.searchForm.endReceiveDate);
-        }
-
-        $http({
-            url: apiConfig.host + "/admin/api/v2/tracker/stockOutReceive/list",
-            method: "GET",
-            params: $scope.searchForm
-        })
-        .success(function (data, status) {
-            // console.log(data);
-            $scope.historyOrderLists = data.content;
-
-            for (var i=0; i < $scope.historyOrderLists.length; i++) {
-                var historyOrderList = $scope.historyOrderLists[i];
-                $scope.subTotal += historyOrderList.amount;
-
-                // $scope.historyOrderLists[i].amount = historyOrderList.amount.toFixed(2);
-            }
-
-            $scope.showLoading = false;
-
-            $scope.page.itemsPerPage = data.pageSize;
-            $scope.page.totalItems = data.total;
-            $scope.page.currentPage = data.page + 1;
-        })
-        .error(function (data, status) {
-            ConfirmModalDialogService.AsyncAlert("获取历史数据失败");
-
-            $scope.showLoading = false;
-        });
-
-        $scope.resetPageAndSearch = function () {
-            $scope.searchForm.page = 0;
-            $scope.searchForm.pageSize = 100;
-
-            $location.search($scope.searchForm);
-        };
-
-        $scope.pageChanged = function() {
-            $scope.searchForm.page = $scope.page.currentPage - 1;
-            $scope.searchForm.pageSize = $scope.page.itemsPerPage;
-
-            $location.search($scope.searchForm);
-        }
-    });
-'use strict';
-/**
- * @ngdoc function
  * @name logisticsApp.controller:OutOfStockCtrl
  * @description
  * # OutOfStockCtrl
@@ -647,89 +853,261 @@ angular.module('logisticsApp')
 'use strict';
 /**
  * @ngdoc function
- * @name logisticsApp.controller:LoginCtrl
+ * @name logisticsApp.controller:RedressLocationCtrl
  * @description
- * # LoginCtrl
+ * # RedressLocationCtrl
  * Controller of the logisticsApp
  */
 angular.module('logisticsApp')
-    .controller('LoginCtrl', function($scope, $http, $state, apiConfig, ConfirmModalDialogService) {
+    .controller('PlanPathCtrl', function ($scope, $stateParams, MapService, ConfirmModalDialogService, OrderGroupService) {
 
-        $scope.isLoginState = false;
+        //获取司机所在的经纬度
 
-    	$scope.user = {
-            username: '',
-            password: ''
-        };
+        OrderGroupService.getLntLat().then(function(data){
 
-        $scope.isLocalStorageSupported = function () {
-            var testKey = 'testKey',
-                storage = window.localStorage;
+            var houseLgt,houseLat;
+            var mapPointArray = [];
 
-            try {
-                storage.setItem(testKey, 'testValue');
-                storage.removeItem(testKey);
-                return true;
-            } catch (error) {
-                return false;
-            }
-        };
+            houseLgt = data.longitude;
+            houseLat = data.latitude;
 
-        // 登录
-        $scope.login = function (user) {
-            if (user.username === "") {
-                ConfirmModalDialogService.AsyncAlert("登录用户名不能为空");
-                return;
-            }
-            if (user.password === "") {
-                ConfirmModalDialogService.AsyncAlert("登录密码不能为空");
-                return;
-            }
+            var map = new BMap.Map("allmap");
+            var centerPoint = new BMap.Point(houseLgt,houseLat);
+            mapPointArray.push(centerPoint);
+            console.log(centerPoint);
+            map.centerAndZoom(centerPoint,18);
 
-            $scope.isLoginState = true;
+            //OrderGroupService.getLoad(houseLgt,houseLat).then(function (data) {
+            //    console.log(data);
+            //
+            //    // 创建地图对象，已登录经纬为中心点
+            //
+            //
+            //
+            //    //$scope.order = data;
+            //    //console.log(data);
+            //    //
+            //    //if ($scope.orde && $scope.order.length != 0) {
+            //    //
+            //    //    $scope.order.forEach(function (order) {
+            //    //        var myP = new BMap.Point(order.restaurant.address.wgs84Point.longitude,order.restaurant.address.wgs84Point.latitude);
+            //    //        mapPointArray.push(myP);
+            //    //        var m = new BMap.Marker(myP);//图标
+            //    //        map.addOverlay(m);
+            //    //        var lab = new BMap.Label(order.restaurant.name,{position:myP});//添加标注
+            //    //        map.addOverlay(lab);//讲标注添加到地图上
+            //    //
+            //    //    })
+            //    //
+            //    //    var polyline = new BMap.Polyline(mapPointArray, {strokeColor:"red", strokeWeight:6, strokeOpacity:0.5});  //定义折线
+            //    //     map.addOverlay(polyline);     //添加折线到地图上*/
+            //    //} else {
+            //    //
+            //    //    return;
+            //    //}
+            //
+            //
+            //});
 
-            $http({
-                url: apiConfig.host + "/api/login",
-                method: 'POST',
-                data: user
-            })
-            .success(function (data, status) {
-                if ($scope.isLocalStorageSupported()) {
-                    window.localStorage['cachedUsername'] = user.username;
-                    window.localStorage['password'] = user.password;
-                }
+        })
 
-                // document.cookie = "realName="+escape(data.name);
 
-                $state.go("home");
 
-                $scope.isLoginState = false;
-            })
-            .error(function (data, status) {
-                $scope.isLoginState = false;
 
-                if (data)
-                    ConfirmModalDialogService.AsyncAlert(data.errmsg);
-                else
-                    ConfirmModalDialogService.AsyncAlert("登录失败");
-            });
-        };
 
-        if (window.localStorage['cachedUsername']) {
-            $scope.user.username = window.localStorage['cachedUsername'];
-            $scope.user.password = window.localStorage['password'];
-
-            $scope.login($scope.user);
-        }
-
-        // 重置
-        $scope.reset = function () {
-            $scope.user.username = "";
-            $scope.user.password = "";
-        };
 
     });
+angular.module('logisticsApp')
+    .factory('MapService', function ($http, $q, apiConfig, $state) {
+	    var service = {};
+    
+		//保存页面的Model
+		service.setViewModel = function (viewModel) {
+            service.viewModel = viewModel;
+        }
 
+		//获取页面Model
+        service.getViewModel = function () {
+            return service.viewModel;
+        }
+        
+        //删除页面Model
+        service.delViewModel = function (){
+        	service.viewModel = null;
+        } 
+        
+        
+        //定位是否成功
+        service.getPointState = function (){
+        	return service.pointState;
+        }
+        
+        //定位时间
+        service.getPointTime = function () {
+        	return service.pointTime;
+        }
+        
+        service.geolocation = function (callback){
+			var currtime = (new Date()).valueOf();
+			if(service.point == undefined || service.pointTime +  1800000 <  currtime){
+				//需要定位
+				service.position(callback);
+			}else{
+				//不需要定位
+				if(callback != undefined)
+					callback();
+			}
+        }
+        
+        //定位数据
+        service.position = function (callback){
+			var geolocation = new BMap.Geolocation();
+
+			geolocation.getCurrentPosition(function(r){
+				if(this.getStatus() == BMAP_STATUS_SUCCESS){
+					service.pointTime = new Date().valueOf(); //记录时间
+					service.point = r.point; //记录坐标
+					service.pointState = 1; //成功
+				}else{
+					service.pointState = 2; //失败
+					alert("定位失败请重试!");
+				}
+				if(callback != undefined)
+					callback(); 
+
+ 			},{enableHighAccuracy: true})
+        }
+
+        return service;
+    });
+
+'use strict';
+/**
+ * @ngdoc function
+ * @name logisticsApp.controller:RedressLocationCtrl
+ * @description
+ * # RedressLocationCtrl
+ * Controller of the logisticsApp
+ */
+angular.module('logisticsApp')
+	.controller('RedressLocationCtrl', function($scope, $stateParams, MapService, ConfirmModalDialogService, OrderGroupService) {
+
+		$scope.backParams = $stateParams.backParams;
+
+		var order = OrderGroupService.getRestaurantInfo();
+
+		if (typeof order != "undefined") {
+			$scope.orderId = order.id;
+			$scope.restaurantId = order.restaurant.id;
+			$scope.restaurantName = order.restaurant.name;
+			$scope.receiver = order.restaurant.receiver;
+			$scope.restaurantTel = order.restaurant.telephone;
+			$scope.restaurantAddress = order.restaurant.address.address;
+			$scope.lat = order.restaurant.address.wgs84Point.latitude;
+			$scope.lng = order.restaurant.address.wgs84Point.longitude;
+		} else {
+			ConfirmModalDialogService.AsyncAlert("程序异常，请返回重试");
+			return;
+		}
+
+		$scope.restaurantNewAddress = $scope.restaurantAddress || null;
+
+		// 创建地图对象
+		var map = new BMap.Map("allmap");
+
+		if ($scope.lat && $scope.lng) {
+			var lat = $scope.lat;
+			var lng = $scope.lng;
+
+			$scope.latlng = lat +","+ lng;
+
+			map.centerAndZoom(new BMap.Point(lng,lat), 18);
+			map.setCenter(new BMap.Point(lng,lat));
+		} else {
+			ConfirmModalDialogService.AsyncAlert("该餐馆暂无坐标无法正常显示");
+			return;
+		}
+
+		// 添加带有定位的导航控件
+		// var navigationControl = new BMap.NavigationControl({
+		//     // 靠左上角位置
+		//     anchor: BMAP_ANCHOR_TOP_LEFT,
+		//     // LARGE类型
+		//     type: BMAP_NAVIGATION_CONTROL_LARGE,
+		//     // 启用显示定位
+		//     enableGeolocation: true
+		// });
+		
+		// map.addControl(navigationControl);
+
+		// // 添加定位控件
+		// var geolocationControl = new BMap.GeolocationControl();
+
+		// geolocationControl.addEventListener("locationSuccess", function(e){
+		//     // 定位成功事件
+		//     // console.log(e.point.lat+","+e.point.lng);
+
+		//     $scope.latlng = e.point.lat+","+e.point.lng;
+		//     $scope.$apply();
+		// });
+
+		// geolocationControl.addEventListener("locationError",function(e){
+		//     // 定位失败事件
+		//     ConfirmModalDialogService.AsyncAlert(e.message);
+		// });
+		
+		// map.addControl(geolocationControl);
+
+		MapService.geolocation(geoCallback());
+
+		// 定位回调
+		function geoCallback() {
+			map.addEventListener("dragend", function(){
+				// console.log(map.getCenter().lat+","+map.getCenter().lng);
+
+ 				$scope.latlng = map.getCenter().lat+","+map.getCenter().lng;
+
+ 				$scope.$apply();
+ 			});
+ 		};
+
+ 		$scope.redressLocation = function () {
+ 			ConfirmModalDialogService.AsyncConfirmYesNo(
+                "确认发起修正位置的工单？", 
+                function() {
+                	var lat = map.getCenter().lat;
+                	var lng = map.getCenter().lng;
+                	var restaurantId = $scope.restaurantId;
+                	var restaurantName = $scope.restaurantName;
+                	var userName = window.sessionStorage['userRealName'];
+                	var userTelephone = window.sessionStorage['userTelephone'];
+
+                	var arr = {
+					    "username": userName,
+					    "restaurantInfo": {
+					    	"userTelephone": userTelephone,
+					    	"orderId": $scope.orderId,
+					    	"restaurantId": restaurantId,
+					    	"restaurantName": restaurantName,
+					    	"receiver": $scope.receiver,
+					    	"restaurantTel": $scope.restaurantTel,
+					    	"restaurantAddress": $scope.restaurantAddress,
+					    	"restaurantNewAddress": $scope.restaurantNewAddress,
+					    	"lat": lat,
+					    	"lng": lng
+					    }
+					};
+
+					arr = JSON.stringify(arr);
+            		arr = encodeURIComponent(arr);
+
+                    // window.location.replace("http://cgwy123.avosapps.com/newTicket?data=" + arr); //测试
+                    window.location.replace("http://www.canguanwuyou.cn/ticket/newTicket?data=" + arr);  //线上
+                }
+            );
+ 		};
+
+ 	});
 'use strict';
 /**
  * @ngdoc function
@@ -1041,197 +1419,6 @@ angular.module('logisticsApp')
         }
 
     });
-angular.module('logisticsApp')
-    .factory('MapService', function ($http, $q, apiConfig, $state) {
-	    var service = {};
-    
-		//保存页面的Model
-		service.setViewModel = function (viewModel) {
-            service.viewModel = viewModel;
-        }
-
-		//获取页面Model
-        service.getViewModel = function () {
-            return service.viewModel;
-        }
-        
-        //删除页面Model
-        service.delViewModel = function (){
-        	service.viewModel = null;
-        } 
-        
-        
-        //定位是否成功
-        service.getPointState = function (){
-        	return service.pointState;
-        }
-        
-        //定位时间
-        service.getPointTime = function () {
-        	return service.pointTime;
-        }
-        
-        service.geolocation = function (callback){
-			var currtime = (new Date()).valueOf();
-			if(service.point == undefined || service.pointTime +  1800000 <  currtime){
-				//需要定位
-				service.position(callback);
-			}else{
-				//不需要定位
-				if(callback != undefined)
-					callback();
-			}
-        }
-        
-        //定位数据
-        service.position = function (callback){
-			var geolocation = new BMap.Geolocation();
-
-			geolocation.getCurrentPosition(function(r){
-				if(this.getStatus() == BMAP_STATUS_SUCCESS){
-					service.pointTime = new Date().valueOf(); //记录时间
-					service.point = r.point; //记录坐标
-					service.pointState = 1; //成功
-				}else{
-					service.pointState = 2; //失败
-					alert("定位失败请重试!");
-				}
-				if(callback != undefined)
-					callback(); 
-
- 			},{enableHighAccuracy: true})
-        }
-
-        return service;
-    });
-
-'use strict';
-/**
- * @ngdoc function
- * @name logisticsApp.controller:RedressLocationCtrl
- * @description
- * # RedressLocationCtrl
- * Controller of the logisticsApp
- */
-angular.module('logisticsApp')
-	.controller('RedressLocationCtrl', function($scope, $stateParams, MapService, ConfirmModalDialogService, OrderGroupService) {
-
-		$scope.backParams = $stateParams.backParams;
-
-		var order = OrderGroupService.getRestaurantInfo();
-
-		if (typeof order != "undefined") {
-			$scope.orderId = order.id;
-			$scope.restaurantId = order.restaurant.id;
-			$scope.restaurantName = order.restaurant.name;
-			$scope.receiver = order.restaurant.receiver;
-			$scope.restaurantTel = order.restaurant.telephone;
-			$scope.restaurantAddress = order.restaurant.address.address;
-			$scope.lat = order.restaurant.address.wgs84Point.latitude;
-			$scope.lng = order.restaurant.address.wgs84Point.longitude;
-		} else {
-			ConfirmModalDialogService.AsyncAlert("程序异常，请返回重试");
-			return;
-		}
-
-		$scope.restaurantNewAddress = $scope.restaurantAddress || null;
-
-		// 创建地图对象
-		var map = new BMap.Map("allmap");
-
-		if ($scope.lat && $scope.lng) {
-			var lat = $scope.lat;
-			var lng = $scope.lng;
-
-			$scope.latlng = lat +","+ lng;
-
-			map.centerAndZoom(new BMap.Point(lng,lat), 18);
-			map.setCenter(new BMap.Point(lng,lat));
-		} else {
-			ConfirmModalDialogService.AsyncAlert("该餐馆暂无坐标无法正常显示");
-			return;
-		}
-
-		// 添加带有定位的导航控件
-		// var navigationControl = new BMap.NavigationControl({
-		//     // 靠左上角位置
-		//     anchor: BMAP_ANCHOR_TOP_LEFT,
-		//     // LARGE类型
-		//     type: BMAP_NAVIGATION_CONTROL_LARGE,
-		//     // 启用显示定位
-		//     enableGeolocation: true
-		// });
-		
-		// map.addControl(navigationControl);
-
-		// // 添加定位控件
-		// var geolocationControl = new BMap.GeolocationControl();
-
-		// geolocationControl.addEventListener("locationSuccess", function(e){
-		//     // 定位成功事件
-		//     // console.log(e.point.lat+","+e.point.lng);
-
-		//     $scope.latlng = e.point.lat+","+e.point.lng;
-		//     $scope.$apply();
-		// });
-
-		// geolocationControl.addEventListener("locationError",function(e){
-		//     // 定位失败事件
-		//     ConfirmModalDialogService.AsyncAlert(e.message);
-		// });
-		
-		// map.addControl(geolocationControl);
-
-		MapService.geolocation(geoCallback());
-
-		// 定位回调
-		function geoCallback() {
-			map.addEventListener("dragend", function(){
-				// console.log(map.getCenter().lat+","+map.getCenter().lng);
-
- 				$scope.latlng = map.getCenter().lat+","+map.getCenter().lng;
-
- 				$scope.$apply();
- 			});
- 		};
-
- 		$scope.redressLocation = function () {
- 			ConfirmModalDialogService.AsyncConfirmYesNo(
-                "确认发起修正位置的工单？", 
-                function() {
-                	var lat = map.getCenter().lat;
-                	var lng = map.getCenter().lng;
-                	var restaurantId = $scope.restaurantId;
-                	var restaurantName = $scope.restaurantName;
-                	var userName = window.sessionStorage['userRealName'];
-                	var userTelephone = window.sessionStorage['userTelephone'];
-
-                	var arr = {
-					    "username": userName,
-					    "restaurantInfo": {
-					    	"userTelephone": userTelephone,
-					    	"orderId": $scope.orderId,
-					    	"restaurantId": restaurantId,
-					    	"restaurantName": restaurantName,
-					    	"receiver": $scope.receiver,
-					    	"restaurantTel": $scope.restaurantTel,
-					    	"restaurantAddress": $scope.restaurantAddress,
-					    	"restaurantNewAddress": $scope.restaurantNewAddress,
-					    	"lat": lat,
-					    	"lng": lng
-					    }
-					};
-
-					arr = JSON.stringify(arr);
-            		arr = encodeURIComponent(arr);
-
-                    // window.location.replace("http://cgwy123.avosapps.com/newTicket?data=" + arr); //测试
-                    window.location.replace("http://www.canguanwuyou.cn/ticket/newTicket?data=" + arr);  //线上
-                }
-            );
- 		};
-
- 	});
 'use strict';
 /**
  * @ngdoc function
@@ -1578,3 +1765,33 @@ angular.module('logisticsApp')
         });
 
     });
+angular.module('logisticsApp')
+    .factory('NetworkUtil', function () {
+	    var service = {};
+
+		/*
+			states[Connection.UNKNOWN]  = 'Unknown connection';
+			states[Connection.ETHERNET] = 'Ethernet connection';
+			states[Connection.WIFI]     = 'WiFi connection';
+			states[Connection.CELL_2G]  = 'Cell 2G connection';
+			states[Connection.CELL_3G]  = 'Cell 3G connection';
+			states[Connection.CELL_4G]  = 'Cell 4G connection';
+			states[Connection.CELL]     = 'Cell generic connection';
+			states[Connection.NONE]     = 'No network connection';
+		*/
+
+		service.getNetworkRs = function (){
+			try{
+				var networkState = navigator.connection.type;
+				if(networkState === "wifi" || networkState === "ethernet" ||
+					networkState === "3g" || networkState === "4g")
+					return true;
+				else
+					return false;
+			}catch(e){
+				return false;
+			}
+		}
+
+    return service;
+});

@@ -11,6 +11,14 @@ body {
 .panel-heading {
 	padding-left: 8px;
 }
+#panel-heading{
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+#evaluation{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
 #lblMsgConfirmYesNo, #alertMsg {
     margin-top: 3px;
     margin-bottom: 3px;
@@ -71,7 +79,7 @@ body {
 }
 .redress-confirm-label {
     display: block;
-    font-size: 100%;
+    font-size: 120%;
     text-align: left;
     background-color: #f8f8f8;
     color: #000;
@@ -113,7 +121,7 @@ body {
 }
 .version {
     position: absolute;
-    bottom: 8px;
+    bottom: 4px;
     text-align: center;
     width: 100%;
 }
