@@ -8,8 +8,7 @@
  * Main module of the application.
  */
 angular
-	.module('logisticsApp', [
-        'ionic',
+    .module('logisticsApp', [
         'templatesCache',
         'ngCordova',
         'oc.lazyLoad',
@@ -23,67 +22,12 @@ angular
         // "host": "http://115.28.66.10"  //线上
         "host": "http://siji.canguanwuyou.cn"
         //"host": "http://114.215.100.12"  //测试
-        // "host": "",  //本地
-        // "environment": "develop"
+        //"host": "",  //本地
+        //"environment": "develop"
     })
-    .run(function ($ionicPlatform, $cordovaFile,$cordovaFileOpener2, $cordovaFileTransfer,$timeout,ConfirmModalDialogService,$state,UpdateService,NetworkUtil) {
-
-        $ionicPlatform.ready(function () {
-            if (ionic.Platform.isAndroid()) {
-
-                //cordova.getAppVersion.getVersionCode(function (versionCode) {
-                //    var newVersionCode = 28;
-                //    if (versionCode < newVersionCode) {
-                //        ConfirmModalDialogService.AsyncConfirmYesNo("版本有更新，是否需要升级？",
-                //            function () {
-                //                var url = "http://download.canguanwuyou.cn/download/cgwy_car.apk";
-                //                var targetPath = cordova.file.externalApplicationStorageDirectory + 'cgwy/cgwy_car_' + newVersionCode + '.apk';
-                //                var trustHosts = true;
-                //                var options = {};
-                //                $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-                //                    .then(function (result) {
-                //                        // 打开下载下来的APP
-                //                        $cordovaFileOpener2.open(targetPath, 'application/vnd.android.package-archive')
-                //                            .then(function () {
-                //                            }, function (err) {
-                //                                ConfirmModalDialogService.AsyncAlert("文件打开失败，请稍后重试！");
-                //                            });
-                //                    }, function (err) {
-                //                        ConfirmModalDialogService.AsyncAlert("当前网络不稳定,下载失败!");
-                //                    }, function (progress) {
-                //                        $timeout(function () {
-                //                            var downloadProgress = (progress.loaded / progress.total) * 100;
-                //                            var msg = "已经下载:" + Math.floor(downloadProgress) + "%";
-                //                            ConfirmModalDialogService.AsyncDialogShow("下载进度" , msg);
-                //                            if (downloadProgress >= 99) {
-                //                                ConfirmModalDialogService.AsyncDialogHide();
-                //                            }
-                //                        })
-                //                    });
-                //            }
-                //        );
-                //    } else {
-                //
-                        if (NetworkUtil.getNetworkRs()) {
-                            var updateObject = function () {
-                                UpdateService.updateApp().then(function (result) {
-                                    if (result == 2) {
-                                        ConfirmModalDialogService.AsyncConfirmYesNo("数据更新失败是否需要重试?",
-                                        function(){
-                                            updateObject();
-                                        });
-                                    }
-                                });
-                            }
-                            updateObject();
-                        }
-                //    }
-                //});
-
-            }
-        });
+    .run(function () {
     })
-	.config(['$stateProvider', '$urlRouterProvider', '$ocLazyLoadProvider', '$locationProvider', '$httpProvider', '$provide',
+    .config(['$stateProvider', '$urlRouterProvider', '$ocLazyLoadProvider', '$locationProvider', '$httpProvider', '$provide',
         function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $locationProvider, $httpProvider, $provide) {
 
             $ocLazyLoadProvider.config({
@@ -113,7 +57,7 @@ angular
             });
 
             $stateProvider
-	            .state('login', {
+                .state('login', {
                     templateUrl: 'login/login.html',
                     controller: 'LoginCtrl',
                     url: '/login',
@@ -127,7 +71,7 @@ angular
                             })
                         }
                     }
-	            })
+                })
                 .state('home', {
                     templateUrl: 'home/home.html',
                     controller: 'HomeCtrl',
@@ -307,8 +251,8 @@ angular
     ]);
 
 
-window.BOOTSTRAP_OK = true;
-
-angular.element(document).ready(function () {
-    angular.bootstrap(document, ['logisticsApp']);
-});
+//window.BOOTSTRAP_OK = true;
+//
+//angular.element(document).ready(function () {
+//    angular.bootstrap(document, ['logisticsApp']);
+//});
