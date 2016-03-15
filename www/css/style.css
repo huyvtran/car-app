@@ -186,3 +186,13 @@ body {
 .form-inline .row {
     text-align: center;
 }
+#houseMap label{
+    display: inline-block;
+    max-width: 150px;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+#houseMap .BMapLabel{
+    width: 120px;
+}
