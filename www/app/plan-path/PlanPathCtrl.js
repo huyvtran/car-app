@@ -9,78 +9,102 @@
 angular.module('logisticsApp')
     .controller('PlanPathCtrl', function ($scope, $stateParams, MapService, ConfirmModalDialogService, OrderGroupService) {
 
-        //获取司机所在的经纬度
+        var mapPointAllArray = [];
+        var mapPointArray = [];
+        var mapTitleAllArray = [];
+        var driving;
+        var map = new BMap.Map("allmap");
+        $scope.curPageon = 1;
+        $scope.curPageSize = 8;
 
+        //获取司机所在的经纬度
         OrderGroupService.getLntLat().then(function(data){
 
-            var houseLgt,houseLat,houseName;
-            var mapPointArray = [];
+            var warehousePoint = new BMap.Point(data.longitude,data.latitude);
+            var houseName = data.name;
+            OrderGroupService.getLoad(data.longitude,data.latitude).then(function (data) {
 
-            houseLgt = data.longitude;
-
-            houseLat = data.latitude;
-            houseName = data.name;
-
-
-            OrderGroupService.getLoad(houseLgt,houseLat).then(function (data) {
-
-                if(data!=null){
+                if(data != null){
                     // 创建地图对象，已登录经纬为中心点
-                    var map = new BMap.Map("allmap");
-                    var centerPoint = new BMap.Point(houseLgt,houseLat);
-                    var centerPointM = new BMap.Marker(centerPoint);//图标
-                    map.addOverlay(centerPointM);
-                    var lab = new BMap.Label(houseName,{position:centerPoint});//添加标注
-                    lab.setStyle({
-                        color : "red",
-                        fontSize : "12px",
-                        height : "20px",
-                        lineHeight : "20px",
-                        fontFamily:"微软雅黑"
-                    });
-                    map.addOverlay(lab);//讲标注添加到地图上
-
-                    mapPointArray.push(centerPoint);
-                    map.centerAndZoom(centerPoint,18);
-
                     $scope.order = data;
                     if ($scope.order && $scope.order.length != 0) {
-
                         $scope.order.forEach(function (order) {
-                            console.log(order);
-                            var myP = new BMap.Point(order.restaurant.address.wgs84Point.longitude,order.restaurant.address.wgs84Point.latitude);
-                            console.log(myP);
-                            mapPointArray.push(myP);
-                            var m = new BMap.Marker(myP);//图标
-                            map.addOverlay(m);
-                            var lab = new BMap.Label(order.restaurant.name,{position:myP});//添加标注
-                            //讲标注添加到地图上
-                            lab.setStyle({
-                                color : "red",
-                                fontSize : "12px",
-                                height : "20px",
-                                lineHeight : "20px",
-                                textline : "center",
-                                fontFamily:"微软雅黑"
-                            });
-                            map.addOverlay(lab);
+                            mapPointAllArray.push(new BMap.Point(order.restaurant.address.wgs84Point.longitude,order.restaurant.address.wgs84Point.latitude));
+                            mapTitleAllArray.push(order.restaurant.name);
                         })
 
-                        for(var i=0;i<mapPointArray.length;i++){
-
-                            var driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});
-                            driving.search(mapPointArray[i], mapPointArray[i+1])
-                        }
-
-
-
-                        /*var polyline = new BMap.Polyline(mapPointArray, {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5});  //定义折线
-                        map.addOverlay(polyline);     //添加折线到地图上*!/*/
-
-                    } else {
-
-                        return;
+                        pageShow();
+                        map.addControl(new BMap.NavigationControl());
+                        map.setViewport(mapPointArray);
+                        map.centerAndZoom(warehousePoint, 11);
+                        driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});
+                        driving.setPolicy(BMAP_DRIVING_POLICY_LEAST_TIME);
+                        driving.search(warehousePoint, mapPointArray[mapPointArray.length-1], {waypoints:mapPointArray}); //waypoints表示途经点
+                        driving.setSearchCompleteCallback(showTitle);
                     }
+
+
+
+                    //
+                    //var centerPoint = new BMap.Point(houseLgt,houseLat);
+                    //
+                    //
+                    //
+                    //var centerPointM = new BMap.Marker(centerPoint);//图标
+                    //map.addOverlay(centerPointM);
+                    //var lab = new BMap.Label(houseName,{position:centerPoint});//添加标注
+                    //lab.setStyle({
+                    //    color : "red",
+                    //    fontSize : "12px",
+                    //    height : "20px",
+                    //    lineHeight : "20px",
+                    //    fontFamily:"微软雅黑"
+                    //});
+                    //map.addOverlay(lab);//讲标注添加到地图上
+                    //
+                    ////mapPointArray.push(centerPoint);
+                    //map.centerAndZoom(centerPoint,18);
+                    //
+                    //$scope.order = data;
+                    //if ($scope.order && $scope.order.length != 0) {
+                    //
+                    //    $scope.order.forEach(function (order) {
+                    //        console.log(order);
+                    //        var myP = new BMap.Point(order.restaurant.address.wgs84Point.longitude,order.restaurant.address.wgs84Point.latitude);
+                    //        console.log(myP);
+                    //        mapPointArray.push(myP);
+                    //        var m = new BMap.Marker(myP);//图标
+                    //        map.addOverlay(m);
+                    //        var lab = new BMap.Label(order.restaurant.name,{position:myP});//添加标注
+                    //        //讲标注添加到地图上
+                    //        lab.setStyle({
+                    //            color : "red",
+                    //            fontSize : "12px",
+                    //            height : "20px",
+                    //            lineHeight : "20px",
+                    //            textline : "center",
+                    //            fontFamily:"微软雅黑"
+                    //        });
+                    //        map.addOverlay(lab);
+                    //    })
+                    //
+                    //
+                    //    map.setViewport(mapPointArray);
+                    //
+                    //    for(var i=0;i<mapPointArray.length;i++){
+                    //        var driving = new BMap.DrivingRoute(map);
+                    //        driving.search(mapPointArray[i], mapPointArray[i+1])
+                    //    }
+                    //
+                    //
+                    //
+                    //    /*var polyline = new BMap.Polyline(mapPointArray, {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5});  //定义折线
+                    //    map.addOverlay(polyline);     //添加折线到地图上*!/*/
+                    //
+                    //} else {
+                    //
+                    //    return;
+                    //}
 
                 }else{
                     ConfirmModalDialogService.AsyncAlert("暂时没有行车路线，请返回！");
@@ -92,8 +116,19 @@ angular.module('logisticsApp')
         })
 
 
+        function showPage() {
+            var pageOn = 0;
+            var pageSize = 10 * pageOn > mapPointAllArray.length ? mapPointAllArray.length : 10 * 1 ;
+            mapPointArray = [];
+            for(var i=pageOn * 10; i< pageSize; i++){
+                mapPointArray[i] = mapPointAllArray[i];
+                var lab = new BMap.Label(i+ ":" + mapTitleAllArray[i],{position:mapPointArray[i]});//添加标注
+                lab.setOffset(new BMap.Size(-10, -50));
+                map.addOverlay(lab);
+            }
+        }
 
+        function showLabs(){
 
-
-
+        }
     });
