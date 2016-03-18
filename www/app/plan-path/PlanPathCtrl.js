@@ -134,7 +134,7 @@ angular.module('logisticsApp')
             }else{
                 pageOn = $scope.page.currentPage-1;
             }
-            var pageSize = 8 * pageOn > mapPointAllArray.length ? ((mapPointAllArray.length )-(8*(pageOn))) : 8 * $scope.page.currentPage ;
+            var pageSize = 8 * pageOn > mapPointAllArray.length ? mapPointAllArray.length  : 8 * $scope.page.currentPage ;
             mapPointArray = [];
             for(var i=pageOn * 8; i< pageSize; i++){
                 mapPointArray[i] = mapPointAllArray[i];
