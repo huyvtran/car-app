@@ -14,14 +14,21 @@ angular.module('logisticsApp')
         var mapTitleAllArray = [];
         var driving;
         var map = new BMap.Map("allmap");
-        $scope.curPageon = 1;
-        $scope.curPageSize = 8;
+
+        $scope.page = {
+            itemsPerPage : 8,
+            currentPage : 1,
+            curPageSize :8
+        };
+
+
 
         //获取司机所在的经纬度
         OrderGroupService.getLntLat().then(function(data){
 
             var warehousePoint = new BMap.Point(data.longitude,data.latitude);
             var houseName = data.name;
+            /*mapTitleAllArray.push(houseName);*/
             OrderGroupService.getLoad(data.longitude,data.latitude).then(function (data) {
 
                 if(data != null){
@@ -33,16 +40,18 @@ angular.module('logisticsApp')
                             mapTitleAllArray.push(order.restaurant.name);
                         })
 
-                        pageShow();
+                        $scope.pageShow(0);
                         map.addControl(new BMap.NavigationControl());
                         map.setViewport(mapPointArray);
                         map.centerAndZoom(warehousePoint, 11);
                         driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});
                         driving.setPolicy(BMAP_DRIVING_POLICY_LEAST_TIME);
                         driving.search(warehousePoint, mapPointArray[mapPointArray.length-1], {waypoints:mapPointArray}); //waypoints表示途经点
-                        driving.setSearchCompleteCallback(showTitle);
+                        driving.setSearchCompleteCallback(showLabs);
                     }
 
+                    $scope.totalPointArray = mapPointAllArray.length;
+                    $scope.page.totalItems = mapPointAllArray.length;
 
 
                     //
@@ -116,19 +125,33 @@ angular.module('logisticsApp')
         })
 
 
-        function showPage() {
-            var pageOn = 0;
-            var pageSize = 10 * pageOn > mapPointAllArray.length ? mapPointAllArray.length : 10 * 1 ;
+        $scope.pageShow = function (num) {
+            var pageOn;
+            var mapArray = [];
+            if(num === 0){
+                pageOn = 0;
+
+            }else{
+                pageOn = $scope.page.currentPage-1;
+            }
+            var pageSize = 8 * pageOn > mapPointAllArray.length ? ((mapPointAllArray.length )-(8*(pageOn))) : 8 * $scope.page.currentPage ;
             mapPointArray = [];
-            for(var i=pageOn * 10; i< pageSize; i++){
+            for(var i=pageOn * 8; i< pageSize; i++){
                 mapPointArray[i] = mapPointAllArray[i];
-                var lab = new BMap.Label(i+ ":" + mapTitleAllArray[i],{position:mapPointArray[i]});//添加标注
+                mapArray[i] = mapPointAllArray[i];
+                var lab = new BMap.Label(i+":"+mapTitleAllArray[i],{position:mapPointArray[i]});//添加标注
                 lab.setOffset(new BMap.Size(-10, -50));
                 map.addOverlay(lab);
             }
+            console.log(mapArray);
+            driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});
+            driving.setPolicy(BMAP_DRIVING_POLICY_LEAST_TIME);
+            driving.search(mapArray, mapArray[mapArray.length-1], {waypoints:mapArray}); //waypoints表示途经点
         }
 
         function showLabs(){
 
         }
+
+
     });
