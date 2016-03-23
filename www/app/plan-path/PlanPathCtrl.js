@@ -24,15 +24,14 @@ angular.module('logisticsApp')
             curPageSize: 8
         };
 
-
-        //获取司机所在的经纬度
+      //获取司机所在的经纬度
         OrderGroupService.getLntLat().then(function (data) {
 
             warehousePoint = new BMap.Point(data.longitude, data.latitude);
             var houseName = data.name;
             OrderGroupService.getLoad(data.longitude, data.latitude).then(function (data) {
 
-                if (data != null) {
+                if (data) {
                     // 创建地图对象，已登录经纬为中心点
                     $scope.order = data;
                     if ($scope.order && $scope.order.length != 0) {
@@ -52,6 +51,8 @@ angular.module('logisticsApp')
                     $scope.totalPointArray = mapPointAllArray.length;
                     $scope.page.totalItems = mapPointAllArray.length;
 
+
+
                 } else {
                     ConfirmModalDialogService.AsyncAlert("暂时没有行车路线，请返回！");
                 }
@@ -63,6 +64,7 @@ angular.module('logisticsApp')
 
 
         $scope.pageShow = function () {
+
             map.clearOverlays();
             mapPointArray = [];
             var pageOn = $scope.page.currentPage;
@@ -93,7 +95,5 @@ angular.module('logisticsApp')
             driving.search(startPoint, endPoint, {waypoints: mapPointArray}); //waypoints表示途经点
         }
 
-        function showLabs() {
 
-        }
     });

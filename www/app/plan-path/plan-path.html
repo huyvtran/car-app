@@ -16,9 +16,11 @@
     <div>
         <span class="label label-default redress-confirm-label">餐馆路线规划展示</span>
     </div>
+
     <div class="row" align="center" ng-if="totalPointArray>8">
-    <div calss="col-lg-12">
-        <pagination total-items="page.totalItems" ng-model="page.currentPage" items-per-page="page.curPageSize" max-size="3" class="pagination" boundary-links="true" ng-click="pageShow()" first-text="首页" last-text="尾页" previous-text="上一页" next-text="下一页"></pagination>
+        <div calss="col-lg-12">
+            <pagination total-items="page.totalItems" ng-model="page.currentPage" items-per-page="page.itemsPerPage" max-size="0" class="pagination" boundary-links="true" ng-change="pageShow()" first-text="首页" last-text="尾页" previous-text="上一页" next-text="下一页"></pagination>
+        </div>
     </div>
-</div>
+
 </div>
