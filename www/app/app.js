@@ -203,8 +203,7 @@ angular
                                 name: 'logisticsApp',
                                 files: [
                                     'app/common/OrderGroupService.js',
-                                    'app/redress-location/MapService.js',
-                                    'app/plan-path/PlanPathCtrl12.js'
+                                    'app/redress-location/MapService.js'
                                 ]
                             })
                         }
