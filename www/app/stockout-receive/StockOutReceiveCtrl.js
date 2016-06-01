@@ -8,7 +8,7 @@
  */
 angular.module('logisticsApp')
     .controller('StockOutReceiveCtrl', function ($scope, $rootScope, $http, $stateParams, $location, $state, $filter, apiConfig, ConfirmModalDialogService) {
-        
+
         $("body").removeClass("modal-open");
         $("body .modal-backdrop").remove();
 
@@ -22,6 +22,7 @@ angular.module('logisticsApp')
         $scope.cashMethod = null;
         $scope.isReceiveAmountLessZero = false;
         $scope.submitting = false;
+        $scope.pageError = false;
 
         $http.get(apiConfig.host + "/admin/api/stockOut/send/" + $scope.stockOutId)
             .success(function (data, status) {
@@ -35,6 +36,7 @@ angular.module('logisticsApp')
                     }
                 });
 
+                $scope.stockOutForm.shouldAmount = data.amount;
                 $scope.stockOutForm.receiveAmount = data.amount;
                 // $scope.stockOutForm.settle = true;
                 $scope.stockOutForm.settle = false;
@@ -70,24 +72,50 @@ angular.module('logisticsApp')
                 ConfirmModalDialogService.AsyncAlert("获取退货原因失败");
             });
 
-        $scope.changeReceiveAmount = function() {
-            $scope.stockOutForm.receiveAmount = $scope.stockOutForm.amount;
-
-            angular.forEach($scope.stockOutItems, function(value, key) {
-                if (value.returnQuantity) {
-                    $scope.stockOutForm.receiveAmount = $scope.stockOutForm.receiveAmount - value.returnQuantity * value.price;
-                }
-            });
-
-            $scope.stockOutForm.receiveAmount = parseFloat($scope.stockOutForm.receiveAmount.toFixed(2));
-
-            if ($scope.stockOutForm.receiveAmount < 0) {
-                $scope.stockOutForm.receiveAmount = 0;
+        $scope.changeReceiveAmount = function(item) {
+            if (item.returnQuantity == undefined) {
+                item.returnQuantity = 0;
             }
-
-            // if ($scope.collectionments.length === 1) {
-            //     $scope.collectionments[0].amount = $scope.stockOutForm.receiveAmount;
-            // }
+            if (!angular.isNumber(parseFloat(item.returnQuantity))) {
+                item.returnQuantity = 0;
+            }
+            if (parseFloat(item.returnQuantity) < 0) {
+                item.returnQuantity = 0;
+            } else if (parseFloat(item.returnQuantity) > item.realQuantity) {
+                item.returnQuantity = item.realQuantity;
+            }
+            var checkCoupon = {};
+            checkCoupon.stockOutId = $scope.stockOutId;
+            checkCoupon.stockOutItems = $scope.stockOutItems;
+            $scope.pageError = true;
+            $http({
+                url: apiConfig.host + "/admin/api/checkCoupon",
+                method: "POST",
+                data: checkCoupon,
+                headers: {'Content-Type': 'application/json;charset=UTF-8'}
+            }).success(function (data, status, headers, config) {
+                $scope.stockOutForm.shouldAmount = $scope.stockOutForm.amount +  data.amount;
+                $scope.stockOutForm.receiveAmount = $scope.stockOutForm.shouldAmount;
+                angular.forEach($scope.stockOutItems, function(value, key) {
+                    if (value.returnQuantity) {
+                        $scope.stockOutForm.receiveAmount = $scope.stockOutForm.receiveAmount - value.returnQuantity * value.price;
+                    }
+                });
+                $scope.stockOutForm.receiveAmount = parseFloat($scope.stockOutForm.receiveAmount.toFixed(2));
+                if ($scope.stockOutForm.receiveAmount < 0) {
+                    $scope.stockOutForm.receiveAmount = 0;
+                }
+                /*if ($scope.collectionments.length == 1) {
+                 $scope.collectionments[0].amount = $scope.stockOutForm.receiveAmount;
+                 }*/
+                $scope.pageError = false;
+            }).error(function (data, status, headers, config) {
+                console.log("data  : --------------------  " + JSON.stringify(data));
+                console.log("status  : --------------------  " + JSON.stringify(status));
+                console.log("headers  : --------------------  " + JSON.stringify(headers));
+                console.log("config  : --------------------  " + JSON.stringify(config));
+                ConfirmModalDialogService.AsyncAlert("计算实收金额失败...");
+            });
         }
 
         $scope.$watch('stockOutForm.receiveAmount', function (newVal, oldVal) {
@@ -102,13 +130,13 @@ angular.module('logisticsApp')
         });
 
         $scope.add = function(amount) {
-			$scope.inserted = {
-			    collectionPaymentMethodId: $scope.cashMethod,
-			    amount: amount
-			};
+            $scope.inserted = {
+                collectionPaymentMethodId: $scope.cashMethod,
+                amount: amount
+            };
 
-			$scope.collectionments.push($scope.inserted);
-		};
+            $scope.collectionments.push($scope.inserted);
+        };
 
         $scope.remove = function(index) {
             $scope.collectionments.splice(index, 1);
@@ -126,13 +154,13 @@ angular.module('logisticsApp')
                     }
                 }
             }
-            
+
             // if ($scope.stockOutForm.settle && !$scope.isReceiveAmountLessZero) {
             //     if ($scope.collectionments.length === 0) {
             //         ConfirmModalDialogService.AsyncAlert("请选择收款方式并输入收款金额");
             //         return;
             //     }
-                
+
             //     var pass = true;
             //     var collectionmentAmount = 0;
 
@@ -172,7 +200,7 @@ angular.module('logisticsApp')
             // }
 
             ConfirmModalDialogService.AsyncConfirmYesNo(
-                "确认完成配送并发起退货？", 
+                "确认完成配送并发起退货？",
                 function() {
                     $scope.submitting = true;
                     $scope.stockOutForm.stockOutId = $stateParams.stockOutId;
