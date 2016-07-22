@@ -1,57 +1,49 @@
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <span class="navbar-brand">退货操作</span>
-            <button type="button" class="btn btn-default navbar-btn" ui-sref="today-order-detail({orderId: stockOutId,backParams: backParams})" style="padding-left: 10px;">
-                <span class="glyphicon glyphicon-menu-left back-left" aria-hidden="true"></span>返回
-            </button>
+<nav class="navbar-fixed-top">
+    <div class="container header">
+        <span class="back-button back" ui-sref="today-order-detail({orderId: stockOutId,backParams: backParams})" ></span>
+        <div class="nav-header">
+            <span>退货操作</span>
         </div>
     </div>
 </nav>
 
-<div class="container-fluid">
-    <div class="row">
+<div class="container-fluid" style="background-color: #e2e2e2;">
+    <div class="row" >
         <form name="tableForm">
             <!-- 退货商品列表 -->
-            <div class="col-lg-12 dataTable_wrapper" ng-if="stockOutItems && stockOutItems.length > 0">
-                <div class="panel panel-default">
-                    <div class="panel-heading" style="padding-right: 8px;">
+            <div class="col-lg-12 dataTable_wrapper"   ng-if="stockOutItems && stockOutItems.length > 0" >
+                <div class=" panel-default" style="background-color: #e2e2e2;">
+                    <div class="panel-heading  alert alert-info alert-tip"  rol="alert" style="padding-right: 8px;background-color: #e6e6e6;height: 45px;">
                         <strong style="font-size: 17px;">退货商品</strong>
 
                         <span class="amount-tip">
-                            <label>应收:</label>
-                            <span style="color: red;">{{stockOutForm.shouldAmount | currency:"￥"}}</span>
-                            |
-                            <label>实收:</label>
-                            <span style="color: #26C326;">{{stockOutForm.receiveAmount | currency:"￥"}}</span>
+                            <label style="color: #000">应收:</label>
+                            <span style="color: #000; margin-right: 5px;">{{stockOutForm.shouldAmount | currency:"￥"}}</span>
+
+                            <label style="color: #000">实收:</label>
+                            <span style="color: #e4393c;margin-right: 10px;">{{stockOutForm.receiveAmount | currency:"￥"}}</span>
                         </span>
                     </div>
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                        <tr>
-                            <th style="vertical-align: middle;">商品名称</th>
-                            <th>应收数量</th>
-                            <th style="width: 20%;vertical-align: middle;">退货数量</th>
-                            <th style="width: 29%;vertical-align: middle;">
-                                <span style="color: red;">*</span>退货原因
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="stockOutItem in stockOutItems">
-                            <td>{{stockOutItem.skuName}}</td>
-                            <td style="vertical-align: middle; text-align: center;">{{stockOutItem.realQuantity}}&nbsp;{{stockOutItem.skuSingleUnit}}</td>
-                            <td style="vertical-align: middle;">
-                                <input type="text" name="returnQuantity_{{$index}}" class="form-control" ng-model="stockOutItem.returnQuantity" ng-change="changeReceiveAmount(stockOutItem)"/>
-                            </td>
-                            <td style="vertical-align: middle;">
-                                <select class="form-control" ng-model="stockOutItem.sellReturnReasonId" ng-options="reason.id as reason.reason for reason in reasons" style="padding-left: 0px;padding-right: 0px;">
+                    <div ng-repeat="stockOutItem in stockOutItems">
+                        <div class="col-lg-12" style="    margin-bottom: 20px;">
+                            <div class="return-list" rol="alert"  style="height: 55px;">
+                                商品名称：{{stockOutItem.skuName}}
+                            </div>
+                            <div class="return-list" rol="alert" >
+                                应收数量：{{stockOutItem.realQuantity}}&nbsp;{{stockOutItem.skuSingleUnit}}
+                            </div>
+                            <div class="return-list " rol="alert" >
+                                <label>退货数量：</label> <input type="text" name="returnQuantity_{{$index}}"  style="left: 70px;" class="form-control return-input"  placeholder="请输入退货数量" ng-model="stockOutItem.returnQuantity" ng-change="changeReceiveAmount(stockOutItem)"/>
+                            </div>
+                            <div class="return-list" rol="alert" >
+                                <label>退货原因：</label>
+                                <select class="form-control return-input" ng-model="stockOutItem.sellReturnReasonId" ng-options="reason.id as reason.reason for reason in reasons" style="padding-left: 0px;padding-right: 0px;">
                                     <option value="">请选原因</option>
                                 </select>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -94,13 +86,13 @@
 
     <br>
     <div class="row" style="text-align: center; margin-bottom: 15px;">
-        <button type="submit" class="btn btn-lg btn-success" style="width: 90%;" ng-click="stockOutReceive()"  ng-disabled="tableForm.$invalid || submitting || stockOutItems.length === 0 || pageError">确认退货</button>
+        <button type="submit" class="btn btn-lg btn-success" style="width: 90%;background-color: #00a1ea;border: none;" ng-click="stockOutReceive()"  ng-disabled="tableForm.$invalid || submitting || stockOutItems.length === 0 || pageError">确认退货</button>
     </div>
     <div class="row" style="text-align: center; margin-bottom: 15px;">
-        <button class="btn btn-lg btn-default" style="width: 90%;border-color: #398439;" ng-disabled="stockOutItems.length === 0" ui-sref="today-order-detail({orderId: stockOutId,backParams: backParams})">取消退货</button>
+        <button class="btn btn-lg btn-default" style="width: 90%;border-color: #00a1ea;color: #00a1ea;background-color: #e2e2e2;" ng-disabled="stockOutItems.length === 0" ui-sref="today-order-detail({orderId: stockOutId,backParams: backParams})">返回详情</button>
     </div>
     <div class="row" style="text-align: center; ">
-        <button class="btn btn-lg btn-default" style="width: 90%;border-color: #337ab7;" ng-disabled="stockOutItems.length === 0" ui-sref="home">返回首页</button>
+        <button class="btn btn-lg btn-default" style="width: 90%;border-color: #31b26b;color: #31b26b;background-color: #e2e2e2;" ng-disabled="stockOutItems.length === 0" ui-sref="home">返回首页</button>
     </div>
     <br>
 </div>

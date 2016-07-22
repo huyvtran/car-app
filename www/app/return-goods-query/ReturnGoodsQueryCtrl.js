@@ -42,12 +42,19 @@ angular.module('logisticsApp')
             startWeek: 1
         };
 
+        var newDate = new Date();
+        newDate.setDate(newDate.getDate() + 1);
+
+        $scope.startHistoryDate = $filter('date')(new Date(), 'yyyy-MM-dd');
+        $scope.endHistoryReturnDate = $filter('date')(newDate, 'yyyy-MM-dd');
+
         $scope.$watch('startDate', function(newVal) {
             $scope.searchForm.startReturnDate = $filter('date')(newVal, 'yyyy-MM-dd');
         });
 
         $scope.$watch('endDate', function(newVal) {
             $scope.searchForm.endReturnDate = $filter('date')(newVal, 'yyyy-MM-dd');
+
         });
 
         if ($scope.searchForm.startReturnDate) {

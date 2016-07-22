@@ -7,10 +7,16 @@
  * Controller of the logisticsApp
  */
 angular.module('logisticsApp')
-    .controller('OutOfStockCtrl', function($scope, $http, apiConfig, ConfirmModalDialogService) {
+    .controller('OutOfStockCtrl', function($scope, $http,$filter, apiConfig, ConfirmModalDialogService) {
 
     	$scope.subTotal = 0;
     	$scope.showLoading = true;
+
+        var newDate = new Date();
+        newDate.setDate(newDate.getDate() + 1);
+
+        $scope.startDate = $filter('date')(new Date(), 'yyyy-MM-dd');
+        $scope.endDate = $filter('date')(newDate, 'yyyy-MM-dd');
 
     	$http({
             url: apiConfig.host + "/admin/api/v2/tracker/sellCancelItem/list",

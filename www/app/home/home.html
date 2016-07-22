@@ -1,81 +1,70 @@
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <span class="navbar-brand">{{userName}}</span>
+<nav class="navbar-fixed-top">
+    <div class="container top">
+        <div class="top-contain">
+            <div class="profile">
+                <span class="personal " ui-sref="profile">个人中心</span>
+                <span class="jiantou"></span>
+            </div>
+            <div class="photo">
+                <img src="img/photo.png">
+            </div>
+            <div class="rea-name">{{userName}}</div>
+            <div class="use-name">{{name}}</div>
+            <div class="evaluation">
+                <span>送货速度：{{evaluate.deliverySpeedScore}}分 &nbsp; | &nbsp;  </span>
+                <span>服务态度：{{evaluate.trackerServiceScore}}分</span>
+            </div>
+            <div class="signIned" ng-if="signStatus==true" ng-click="sign()">
+                <div class="signed-box">
+                    <span class="signed">已签到</span>
+                    <span class="dagou"></span>
+                </div>
+            </div>
+            <div class="signIn" ng-if="signStatus==false" ng-click="sign()">
+                <div class="sign-box">
+                    <span class="sign">签到</span>
+                    <span class="dagou"></span>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-12 dataTable_wrapper">
-            <div class="panel panel-default">
-                <div class="panel-heading" id="evaluation">
-                    <strong style="font-size: 17px;">我的评价</strong>
+<div class="middle container-fluid" >
+    <div class="home-med">
+        <div class="waite" ui-sref="today-order-list" style="display: inline-block;" >
+            <div class="waite-img">
+                <img src="img/waite.png">
+                <span class="num">{{deliverOrderCount}}</span>
+            </div>
+            <span class="distribution">待配送(单)</span>
+        </div>
+        <div class="finished" ui-sref="today-order-list({statusValue:2})" >
+            <div style="text-align: right;margin-right: 30%;">
+                <div class="finished-img">
+                    <img src="img/finished.png">
+                    <span class="num already">{{deliveredOrderCount}}</span>
                 </div>
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <td class="text-btn-center" style="font-size: 17px;padding: 12px 8px;">送货速度：{{evaluate.deliverySpeedScore}}分</td>
-                            <td class="text-btn-center" style="font-size: 17px;padding: 12px 8px;">服务态度：{{evaluate.trackerServiceScore}}分</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <span class="completed">已配送(单)</span>
             </div>
         </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-lg-12 dataTable_wrapper">
-            <div class="panel panel-default">
-                <div class="panel-heading" id="panel-heading">
-                    <strong style="font-size: 17px;">今日订单</strong>
+        <div class="waite" style="border-top: 1px solid #b4b4b4" ui-sref="today-order-query">
+            <div class="waite-img">
+                <img src="img/query.png" style="width: 60px;margin: 25px 10px 0 23px;">
+                <span></span>
+            </div>
+            <span class="distribution">配送单查询</span>
+        </div>
+        <div class="finished" ui-sref="plan-path">
+            <div style="border-top: 1px solid #b4b4b4;text-align: right;margin-right: 25%;">
+                <div class="finished-img">
+                    <img src="img/route.png" style="width: 80px;margin: 35px 10px 0 45px">
+                    <span></span>
                 </div>
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <td class="text-btn-center">
-                                <button class="btn btn-lg btn-danger" ui-sref="today-order-list" style="width: 80%;">待配送(单)：
-                                    <span class="badge">{{deliverOrderCount}}</span>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                             <td class="text-btn-center">
-                                <button class="btn btn-lg btn-success" ui-sref="today-order-list({statusValue:2})" style="width: 80%;">已配送(单)：
-                                    <span class="badge">{{deliveredOrderCount}}</span>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                             <td class="text-btn-center">
-                                <button class="btn btn-lg btn-primary" ui-sref="query-page" style="width: 80%;">
-                                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>&nbsp;配送单查询
-                                </button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="text-btn-center">
-                                <button class="btn btn-lg btn-primary" ui-sref="plan-path" style="width: 80%;">
-                                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>&nbsp;配送路线
-                                </button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="text-btn-center">
-                                <button class="btn btn-lg btn-default" ng-click = "logout()" style="width: 80%;">
-                                    <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;退出登录
-                                </button>
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
+                <span class="completed" style="margin-right: 20px;">配送路线</span>
             </div>
         </div>
     </div>
 </div>
 
-<div class="version">当前最新版本V1.1</div>
+

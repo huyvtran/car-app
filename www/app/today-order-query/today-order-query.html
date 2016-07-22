@@ -1,48 +1,68 @@
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <span class="navbar-brand">当日订单一览</span>
-            <button type="button" class="btn btn-default navbar-btn" ui-sref="query-page" style="padding-left: 10px;">
-                <span class="glyphicon glyphicon-menu-left back-left" aria-hidden="true"></span>返回
-            </button>
-        </div>
-    </div>
+<nav class="navbar-fixed-top">
+	<div class="container header">
+		<span class="back-button back" ui-sref="home" ></span>
+		<div class="nav-header">
+			<span>配送单查询</span>
+		</div>
+	</div>
 </nav>
 
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="bs-callout bs-callout-info-danger">
-                <h4>待配送</h4>
-                <h3 style="font-size: 20px;">单数：{{deliverOrderCount}}&nbsp;&nbsp;金额：{{deliverOrderTotal | currency : "￥"}}</h3>
-            </div>
+<div class="container-fluid" style="margin: 0; padding: 0">
+	<div class="circle-contain">
+		<div class="circle">
+			<div class="pie_left"><div class="left"  ></div></div>
+			<div class="pie_right"><div class="right" ></div></div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="bs-callout bs-callout-info-success">
-                <h4 class="success">已配送</h4>
-                <h3 style="font-size: 20px;">单数：{{deliveredOrderCount}}&nbsp;&nbsp;金额：{{deliveredOrderTotal | currency : "￥"}}</h3>
-            </div>
+	<div class="today-contain" ng-if="orderGroups.length > 0">
+		<div class="today-left">
+			<div class="title">
+				<span class="already-go"></span>
+				<span class="al">已配送</span>
+			</div>
+			<div class="today-comment">单数：{{deliveredOrderCount}}</div>
+			<div class="today-comment">金额：{{deliveredOrderTotal | currency : "￥"}}</div>
+		</div>
+		<div class="today-right">
+			<div class="title">
+				<span class="ready"></span>
+				<span class="re">待配送</span>
+			</div>
+			<div class="today-comment">单数：{{deliverOrderCount}}</div>
+			<div class="today-comment">金额：{{deliverOrderTotal | currency : "￥"}}</div>
+		</div>
+		<div class="today-bottom" style="margin-top: 50px;padding: -2px 10%;">
+			<span class="">总单数：{{orderGroups.length ? orderGroups.length : 0}} </span>
+			<span>总金额：<span style="color: #e4393c">{{subTotal | currency : "￥"}}</span></span>
+		</div>
+
+	</div>
+	<div class="row" ng-if="orderGroups.length == 0" style="display: flex;height: 680px;">
+		<div class="zore">
+			<div class="no-stockout"></div>
+			<div class="no" style="position: absolute;left:-5px;width: 114px;">今日暂无订单信息</div>
 		</div>
 	</div>
-	<hr>
-	<div class="acount-wrapper">
-		<div class="row">
-			<div class="left">
-				<h4>总单数：</h4>
-			</div>
-			<div class="right">
-				<h4>{{orderGroups.length ? orderGroups.length : 0}}</h4>
-			</div>
+
+
+</div>
+<div class="navbar navbar-fixed-bottom bottom" style="background-color: #f6f6f6;">
+	<div class="query-bottom">
+		<div class="today-orders">
+			<span class="today"></span>
+			<div>今日订单</div>
 		</div>
-		<div class="row">
-			<div class="left">
-				<h4>总金额：</h4>
-			</div>
-			<div class="right">
-				<h4 style="color: red;">{{subTotal | currency : "￥"}}</h4>
-			</div>
+		<div class="stockout-query"  ui-sref="out-of-stock">
+			<span class="stockout"></span>
+			<div>缺货查询</div>
+		</div>
+		<div class="return-back"  ui-sref="return-goods-query({startReturnDate:startDate,endReturnDate:endDate})">
+			<span class="return"></span>
+			<div>退货查询</div>
+		</div>
+		<div class="history-query" ui-sref="histories-query({startReceiveDate:startDate,endReceiveDate:endDate})">
+			<span class="history"></span>
+			<div>历史查询</div>
 		</div>
 	</div>
 </div>

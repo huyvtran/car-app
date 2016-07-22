@@ -1,0 +1,71 @@
+<nav class="navbar-fixed-top">
+    <div class="container header">
+        <span class="back-button back" ui-sref="profile" ></span>
+        <div class="nav-header">
+            <span>司机反馈</span>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid my">
+     <div class="row">
+            <div class="col-lg-12" ui-sref="feedback">
+                <div class="alert alert-info alert-tip profile-header" rol="alert" style="border-bottom: 1px solid #e2e2e2">
+                    餐馆名称
+                </div>
+                <input class="res-name" ng-model="form.restaurantName" placeholder="请输入餐馆名称" value="">
+            </div>
+            <div class="col-lg-12">
+                <div class="alert alert-info alert-tip profile-header" rol="alert">
+                    请选择类型
+                </div>
+                <select class="selectpicker type" ng-model="form.type" ng-options="o.value as o.name for o in types" style="overflow: hidden" >
+                    <option value="">请选择</option>
+                </select>
+                <span class="order-detail" style="top:20px;right: 10px;"></span>
+            </div>
+            <div class="col-lg-12">
+                <div class="alert-info alert-tip profile-header feedback" rol="alert">
+                    反馈内容：
+                    <textarea class="form-control feedback-text" ng-model="form.content" style="height: 84px;" rows="3" placeholder="请输入反馈的内容，我们会尽快处理"></textarea>
+                    <div class="col-lg-6" style="padding: 0px;">
+                        <div class='upload'>
+                            <img src="img/add.png" style="position: relative;top: 15px;width: 35px;" ng-src="{{lastPhoto}}" ng-click="addPicture()">
+                        </div>
+                        <span class="addPhoto">添加图片</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 feedback-submit" ng-click="upload(lastPhoto)">
+                <div class="alert alert-info alert-tip profile-header feedback-sub" rol="alert" >
+                    提交
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="action-sheet-backdrop">
+    <div class="action-sheet-wrapper" ng-class="{'action-sheet-up': showDrop}">
+        <div class="action-sheet">
+            <div class="action-sheet-group">
+                <button class="button action-sheet-option" ng-click="buttonClicked(0)">从手机相册选择</button>
+                <button class="button action-sheet-option" ng-click="buttonClicked(1)" style="border-top: 1px solid #c8c8c8;">拍照</button>
+            </div>
+
+            <div class="action-sheet-group">
+                <button class="button" ng-click="hideBackdrop()">
+                    <span class="glyphicon glyphicon-remove back-left" aria-hidden="true" style="margin-right: 6px;top: 3px;"></span>取消
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+        $('#tabs a').click(function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+        });
+    });
+</script>

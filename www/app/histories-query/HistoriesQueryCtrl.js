@@ -15,7 +15,7 @@ angular.module('logisticsApp')
             startReceiveDate : $stateParams.startReceiveDate,
             endReceiveDate : $stateParams.endReceiveDate
 		};
-
+        console.log($scope.searchForm);
 		$scope.subTotal = 0;
 		$scope.format = 'yyyy-MM-dd';
 		$scope.page = {itemsPerPage : 100};
@@ -41,6 +41,12 @@ angular.module('logisticsApp')
             startingDay: 1,
             startWeek: 1
         };
+
+        var newDate = new Date();
+        newDate.setDate(newDate.getDate() + 1);
+
+        $scope.startReDate = $filter('date')(new Date(), 'yyyy-MM-dd');
+        $scope.endReDate = $filter('date')(newDate, 'yyyy-MM-dd');
 
         $scope.$watch('startDate', function(newVal) {
             $scope.searchForm.startReceiveDate = $filter('date')(newVal, 'yyyy-MM-dd');

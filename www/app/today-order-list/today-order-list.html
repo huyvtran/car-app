@@ -1,15 +1,13 @@
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <span class="navbar-brand">今日订单_<span ng-if="isDeliverOrderGroups == true">待</span><span ng-if="isDeliverOrderGroups == false">已</span>配送</span>
-            <button type="button" class="btn btn-default navbar-btn" ui-sref="home" style="padding-left: 10px;">
-                <span class="glyphicon glyphicon-menu-left back-left" aria-hidden="true"></span>返回
-            </button>
+<nav class="navbar-fixed-top">
+    <div class="container header">
+        <span class="back-button back" ui-sref="home" ></span>
+        <div class="nav-header">
+            <span ng-if="isDeliverOrderGroups == true">待</span><span ng-if="isDeliverOrderGroups == false">已</span>配送
         </div>
     </div>
 </nav>
 
-<div class="container-fluid">
+<div class="container-fluid waite-distribution" style="min-height: 740px;">
     <div class="row" ng-if="displayOrderGroups.length > 0">
         <div class="col-lg-12">
             <div class="alert alert-info alert-tip" rol="alert">
@@ -22,38 +20,40 @@
 	    <div class="col-lg-12 dataTable_wrapper">
 	     	<div class="panel panel-default">
 	     		<div class="panel-heading">
-                    <strong>{{order.restaurant.id}}－{{order.restaurant.name}}</strong>
+                    <div class="user">{{order.restaurant.id}}－{{order.restaurant.name}}</div>
+                    <div class="detail" ui-sref="today-order-detail({orderId:order.id,backParams:backParams})">
+                        详情
+                        <span class="order-detail"></span>
+                    </div>
                 </div>
-                <table class="table table-bordered">
-                 	<tbody>
-                 		<tr>
-                 			<td style="vertical-align: middle;">详细地址：{{order.restaurant.address.address}}</td>
-                 			<td style="width: 20%;vertical-align: middle;">
-                 				<button class="btn btn-primary" ng-click="toNavigate(order.restaurant.address)" ng-disabled="order.status.value === 2">导航</button>
-                 			</td>
-                 		</tr>
-                 		<tr>
-                 			<td style="vertical-align: middle;">联系电话：<span ng-click="toConfirmYesNo(order.restaurant.telephone)">{{order.restaurant.telephone}}</span></td>
-                 			<td style="width: 20%">
-                 				<button class="btn btn-success" ng-click="toConfirmYesNo(order.restaurant.telephone)">拨打</button>
-                 			</td>
-                 		</tr>
-                 		<tr>
-                 			<td style="vertical-align: middle;">下单金额：<span style="color: red;">{{order.total | currency : "￥"}}</span></td>
-                 			<td style="width: 20%">
-                 				<button class="btn btn-info" ui-sref="today-order-detail({orderId:order.id,backParams:backParams})">详情</button>
-                 			</td>
-                 		</tr>
-                 	</tbody>
-                </table>
-	     	</div>
+                <div class="messages-box">
+                    <div class="messages user">
+                        <div><span>详细地址：{{order.restaurant.address.address}}</span></div>
+                        <div><span ng-click="toConfirmYesNo(order.restaurant.telephone)">联系电话：{{order.restaurant.telephone}}</span></div>
+                        <div><span>下单金额：<span style="color: red;">{{order.total | currency : "￥"}}</span></span></div>
+                    </div>
+                </div>
+                <div class="messages-bottom">
+                    <div class="messages-bottom-box">
+                        <div class="messages-location" ng-click="toNavigate(order.restaurant.address)" ng-disabled="order.status.value === 2">
+                            <span class="loca"></span>
+                            导航
+                        </div>
+                        <div class="messages-phone" ng-click="toConfirmYesNo(order.restaurant.telephone)">
+                            拨打电话
+                            <span class="phone"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 	    </div>
 	</div>
 
-    <div class="row" ng-if="displayOrderGroups.length === 0">
-        <p class="no-order-tip">
-            <span class="glyphicon glyphicon-alert" aria-hidden="true" style="top: 2px; padding-right: 5px;"></span>暂无配送单
-        </p>
+    <div class="row" ng-if="displayOrderGroups.length === 0" style="display: flex;height: 680px;">
+         <div class="zore">
+             <div class="none"></div>
+             <div class="no">暂无配送单</div>
+         </div>
     </div>
 </div>
 

@@ -1,10 +1,8 @@
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <span class="navbar-brand">位置坐标调整</span>
-            <button type="button" class="btn btn-default navbar-btn" ui-sref="today-order-detail({orderId: orderId,restaurantId: restaurantId,backParams: backParams})" style="padding-left: 10px;">
-                <span class="glyphicon glyphicon-menu-left back-left" aria-hidden="true"></span>返回
-            </button>
+<nav class="navbar-fixed-top">
+    <div class="container header">
+        <span class="back-button back" ui-sref="today-order-list" ></span>
+        <div class="nav-header">
+            <span>位置坐标调整</span>
         </div>
     </div>
 </nav>
@@ -30,5 +28,5 @@
 </div>
 
 <div class="redress-confirm-btn">
-    <button class="btn btn-lg btn-success" style="width: 80%;" ng-click="redressLocation()">位置确认提交</button>
+    <button class="btn btn-lg btn-success" style="width: 80%; background-color: #00a1ea;border: none;" ng-click="redressLocation()">位置确认提交</button>
 </div>

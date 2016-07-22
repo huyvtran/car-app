@@ -9,6 +9,7 @@
 angular.module('logisticsApp')
     .controller('PlanPathCtrl', function ($scope, $stateParams, MapService, ConfirmModalDialogService, OrderGroupService) {
 
+
         var mapPointAllArray = [];
         var mapPointArray = [];
         var mapTitleAllArray = [];
@@ -29,7 +30,9 @@ angular.module('logisticsApp')
 
             warehousePoint = new BMap.Point(data.longitude, data.latitude);
             var houseName = data.name;
-            OrderGroupService.getLoad(data.longitude, data.latitude).then(function (data) {
+            
+            if(data){
+                OrderGroupService.getLoad(data.longitude, data.latitude).then(function (data) {
 
                 if (data) {
                     // 创建地图对象，已登录经纬为中心点
@@ -58,7 +61,11 @@ angular.module('logisticsApp')
                 }
 
 
-            });
+                });
+            }else{
+                ConfirmModalDialogService.AsyncAlert("没有司机坐标请重新定位！");
+            }
+            
 
         })
 

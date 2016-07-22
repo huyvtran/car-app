@@ -33,6 +33,15 @@ angular.module('logisticsApp')
 
 		}
 
+		service.getUserId = function(){
+			return $http({
+				url: apiConfig.host + "/admin/api/admin-user/me",
+				method: "GET",
+			}).then(function (payload) {
+				return payload.data;
+			})
+		}
+
 		service.setRestaurantInfo = function (order) {
 			service.order = order; 
 		}

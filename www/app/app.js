@@ -20,11 +20,12 @@ angular
         'ngTouch'
     ])
     .constant('apiConfig', {
-        // "host": "http://115.28.66.10"  //线上
+         //"host": "http://115.28.66.10",  //线上
         "host": "http://siji.canguanwuyou.cn"
-        //"host": "http://114.215.100.12"  //测试
-        // "host": "",  //本地
-        // "environment": "develop"
+        //"host": "http://114.215.100.12:8082" //测试
+        //"host": "http://115.28.64.174:8087", //测试
+        //"host": "",
+        //"environment": "develop"
     })
     .run(function ($ionicPlatform, $cordovaFile,$cordovaFileOpener2, $cordovaFileTransfer,$timeout,ConfirmModalDialogService,$state,UpdateService,NetworkUtil) {
 
@@ -295,6 +296,38 @@ angular
                                 name: 'logisticsApp',
                                 files: [
                                     'app/histories-query/HistoriesQueryCtrl.js'
+                                ]
+                            })
+                        }
+                    }
+                })
+                .state('profile', {
+                    templateUrl: 'profile/profile.html',
+                    controller: 'ProfileCtrl',
+                    url: '/profile',
+                    resolve: {
+                        loadMyFiles: function ($ocLazyLoad) {
+                            return $ocLazyLoad.load({
+                                name: 'logisticsApp',
+                                files: [
+                                    'app/profile/ProfileCtrl.js'
+                                ]
+                            })
+                        }
+                    }
+                })
+                .state('feedback', {
+                    templateUrl: 'feedback/feedback.html',
+                    controller: 'FeedbackCtrl',
+                    url: '/feedback',
+                    resolve: {
+                        loadMyFiles: function ($ocLazyLoad) {
+                            return $ocLazyLoad.load({
+                                name: 'logisticsApp',
+                                files: [
+                                    'app/feedback/FeedbackCtrl.js',
+                                    'app/feedback/CameraService.js'
+                                    //'app/feedback/FeedbackService.js'
                                 ]
                             })
                         }
