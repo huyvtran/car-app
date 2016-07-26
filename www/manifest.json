@@ -11,12 +11,147 @@
     "style": {
       "version": "c8e46b472fd6cf65d930a36411f0ee51dc695ffd",
       "filename": "css/style.css"
+    },
+    "photo": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/photo.png"
+    },
+    "top": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/top.png"
+    },
+    "jiantou": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/jiantou.png"
+    },
+    "waite": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/waite.png"
+    },
+    "finished": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/finished.png"
+    },
+    "query": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/query.png"
+    },
+    "route": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/route.png"
+    },
+    "dagou": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/dagou.png"
+    },
+    "sign": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/sign.png"
+    },
+    "nav": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/nav.png"
+    },
+    "back": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/back.png"
+    },
+    "jiantouIcon": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/jiantouIcon.png"
+    },
+    "loca": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/loca.png"
+    },
+    "phone": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/phone.png"
+    },
+    "none": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/none.png"
+    },
+    "todayIcon": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/todayIcon.png"
+    },
+    "stockout": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/stockout.png"
+    },
+    "stockout-now": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/stockout-now.png"
+    },
+    "returnIcon": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/returnIcon.png"
+    },
+    "history": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/history.png"
+    },
+    "history-now": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/history-now.png"
+    },
+    "returnSelect": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/returnSelect.png"
+    },
+    "today-none": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/today-none.png"
+    },
+    "return-none": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/return-none.png"
+    },
+    "history-none": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/history-none.png"
+    },
+    "location": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/location.png"
+    },
+    "add": {
+      "version": "42a76bdc2d31f8ace192a3a1598bd1332755ed5f",
+      "filename": "img/add.png"
     }
   },
   "load": [
     "templates.js",
     "app.js",
-    "css/style.css"
+    "css/style.css",
+    "img/photo.png",
+    "img/top.png",
+    "img/jiantou.png",
+    "img/waite.png",
+    "img/finished.png",
+    "img/query.png",
+    "img/route.png",
+    "img/dagou.png",
+    "img/sign.png",
+    "img/nav.png",
+    "img/back.png",
+    "img/jiantouIcon.png",
+    "img/loca.png",
+    "img/phone.png",
+    "img/none.png",
+    "img/todayIcon.png",
+    "img/stockout.png",
+    "img/stockout-now.png",
+    "img/returnIcon.png",
+    "img/history.png",
+    "img/history-now.png",
+    "img/returnSelect.png",
+    "img/today-none.png",
+    "img/return-none.png",
+    "img/history-none.png",
+    "img/location.png",
+    "img/add.png"
   ],
   "version": "7a8543a4fde024883121aa86ca9c018c46ab6f83"
 }
