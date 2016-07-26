@@ -17,7 +17,7 @@ angular.module('logisticsApp')
 			try{
 				var networkState = navigator.connection.type;
 				if(networkState === "wifi" || networkState === "ethernet" ||
-					networkState === "3g" || networkState === "4g")
+					networkState === "3g" || networkState === "4g" || networkState === "cellular")
 					return true;
 				else
 					return false;

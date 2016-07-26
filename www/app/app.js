@@ -33,7 +33,7 @@ angular
             if (ionic.Platform.isAndroid()) {
 
                 cordova.getAppVersion.getVersionCode(function (versionCode) {
-                    var newVersionCode = 38;
+                    var newVersionCode = 48;
                     if (versionCode < newVersionCode) {
                         ConfirmModalDialogService.AsyncConfirmYesNo("版本有更新，是否需要升级？",
                             function () {
